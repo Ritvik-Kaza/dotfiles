@@ -1,2 +1,0 @@
-# dotfiles
-arch setup dotfiles

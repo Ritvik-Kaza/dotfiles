@@ -290,7 +290,7 @@ hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("alacritty -e nvim ."))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/dev-session.sh"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + Tab", hl.dsp.focus({ workspace = "previous"}))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))

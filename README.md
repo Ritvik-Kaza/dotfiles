@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal configuration files for my Arch Linux + Hyprland setup.
+Personal configuration files for my Arch Linux + Hyprland setup. (work in progress)
 
 ## Structure
 

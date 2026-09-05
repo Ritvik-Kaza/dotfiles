@@ -1,51 +1,27 @@
-*{
-    font-family: JetBrainsMono;
+* {
+    font-family: "JetBrainsMono Nerd Font";
     font-size: 13px;
-    min-height: 0;
-    color: white;
 }
 
 window#waybar {
-    background-color: transparent;
+    background-color: rgba(30, 30, 46, 0.9);
+    color: #cdd6f4;
 }
 
-#workspaces{
-    margin-top: 3px;
-    margin-bottom: 2px;
-    margin-right: 10px;
-    margin-left: 25px;
+#workspaces button {
+    padding: 0 10px;
+    color: #cdd6f4;
 }
 
-#workspaces button{
-    border-radius: 15px;
-    margin-right: 10px;
-    padding: 1px 10px;
-    font-weight: bolder;
-    background-color: #181818;
+#workspaces button.active {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    border-radius: 6px;
 }
 
-#workspaces button.active, #workspaces button.focused{
-    padding: 0 22px;
-    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;    
-    background: #7C9D96;
+#memory, #battery, #pulseaudio, #network, #clock {
+    padding: 0 10px;
 }
 
-#tray,
-#mpd,
-#custom-weather,
-#cpu, 
-#temperature, 
-#memory,
-#sway-mode,
-#backlight, 
-#pulseaudio, 
-#custom-vpn,
-#disk,
-#custom-recorder,
-#custom-audiorec,
-#battery, 
-#clock, 
-#idle_inhibitor,
-#network {
-	padding: 0 10px;
-}
+#battery.warning { color: #f9e2af; }
+#battery.critical { color: #f38ba8; }

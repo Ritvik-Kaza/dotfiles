@@ -296,7 +296,7 @@ hl.bind(mainMod .. " + Tab", hl.dsp.focus({ workspace = "previous"}))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("killall waybar; hyprctl dispatch 'hl.dsp.exec_cmd(\"waybar\")'"))
-
+hl.bind(mainMod .. " + SHIFT" .. " + L", hl.dsp.exec_cmd("hyprlock & sleep 1 && systemctl suspend"))
 
 -- Screenshots
 hl.bind("Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureAll.sh"))

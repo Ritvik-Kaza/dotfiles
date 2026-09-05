@@ -39,3 +39,5 @@ set_prompt() {
 }
 
 PROMPT_COMMAND=set_prompt
+
+alias suspend='hyprlock >/dev/null 2>&1 & sleep 1 && systemctl suspend >/dev/null 2>&1'

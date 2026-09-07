@@ -42,4 +42,4 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - Bash prompt shows `user@host path` outside git repos, and `dirname git:(branch)` (with a `✗` for uncommitted changes) inside git repos.
 - Hyprland config uses the newer Lua-based format (`hyprland.lua`), not the legacy `hyprland.conf`.
 - `mainMod + N` in Hyprland runs `dev-session.sh`, opening Alacritty with a tmux session: window 1 = `nvim .`, window 2 = plain shell, focused on window 1.
-- tmux prefix is `Ctrl+A` (remapped from default `Ctrl+B`). Windows can also be switched directly with `Alt+1` through `Alt+9`, no prefix needed.
+- tmux prefix is `Ctrl+A` (remapped from default `Ctrl+B`). Windows can also be switched directly with `Alt+1` through `Alt+9`, no prefix needed, and 'Alt + Tab' can be use to switch to the previous window.

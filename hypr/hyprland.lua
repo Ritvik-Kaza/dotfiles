@@ -95,13 +95,26 @@ hl.env("HYPRCURSOR_SIZE", "24")
 ---- LOOK AND FEEL ----
 -----------------------
 
+hl.layer_rule({
+  name = "waybar-blur",
+  match = { namespace = "waybar" },
+  blur = true,
+  ignore_alpha = 0.0,
+})
+
+hl.layer_rule({
+  name = "wlogout-blur",
+  match = { namespace = "wlogout" },
+  blur = true,
+})
+
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
 hl.config({
     general = {
         gaps_in  = 5,
-        gaps_out = 5,
+        gaps_out = 3,
 
-        border_size = 2,
+        border_size = 0,
 
         col = {
             active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Small wlogout popup anchored under the waybar power icon (top-right).
+# Re-running while open closes it, so the waybar click acts as a toggle.
+#
+# NOTE: wlogout's long options --margin-top / --margin-bottom do not exist
+# (its option table names -T and -B "margin-right" by mistake), so only the
+# short flags -L -R -T -B are used below.
+
+set -euo pipefail
+
+if pgrep -x wlogout >/dev/null 2>&1; then
+  pkill -x wlogout
+  exit 0
+fi
+
+# Popup geometry, logical pixels. Whole card is POPUP_W x POPUP_H.
+POPUP_W=200
+POPUP_H=58
+GAP_RIGHT=12   # matches waybar margin-right
+GAP_TOP=52     # waybar margin-top (8) + height (34) + 10px gap
+
+# Focused monitor, corrected for fractional scaling
+read -r MON_W MON_H MON_S MON_ID < <(
+  hyprctl -j monitors | jq -r '.[] | select(.focused == true) | "\(.width) \(.height) \(.scale) \(.id)"'
+)
+SCREEN_W=$(awk "BEGIN { printf \"%d\", $MON_W / $MON_S }")
+SCREEN_H=$(awk "BEGIN { printf \"%d\", $MON_H / $MON_S }")
+
+MARGIN_L=$(( SCREEN_W - POPUP_W - GAP_RIGHT ))
+MARGIN_R=$GAP_RIGHT
+MARGIN_T=$GAP_TOP
+MARGIN_B=$(( SCREEN_H - POPUP_H - GAP_TOP ))
+
+(( MARGIN_L < 0 )) && MARGIN_L=0
+(( MARGIN_B < 0 )) && MARGIN_B=0
+
+exec wlogout \
+  -l "$HOME/.config/wlogout/layout" \
+  -C "$HOME/.config/wlogout/style.css" \
+  -b 3 \
+  -c 0 \
+  -r 0 \
+  -L "$MARGIN_L" \
+  -R "$MARGIN_R" \
+  -T "$MARGIN_T" \
+  -B "$MARGIN_B" \
+  -P "$MON_ID" \
+  -n \
+  -p layer-shell

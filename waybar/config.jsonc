@@ -1,54 +1,106 @@
 {
-    "layer": "top",
-    "position": "top",
-    "height": 30,
-    "spacing": 4,
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 0,
+  "margin-top": 8,
+  "margin-bottom": 0,
+  "margin-left": 12,
+  "margin-right": 12,
+  "reload_style_on_change": true,
 
-    "modules-left": ["memory", "battery", "pulseaudio"],
-    "modules-center": ["hyprland/workspaces"],
-    "modules-right": ["clock", "network"],
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["memory", "battery", "pulseaudio", "bluetooth", "network", "custom/power"],
 
-    "hyprland/workspaces": {
-        "format": "{id}",
-        "on-click": "activate",
-        "active-only": false,
-        "all-outputs": true
-    },
-
-    "memory": {
-        "format": " {percentage}%",
-        "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB"
-    },
-
-    "battery": {
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "states": {
-            "warning": 20,
-            "critical": 10
-        }
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": " Muted",
-        "format-icons": {
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
-    },
-
-    "clock": {
-        "format": "{:%H:%M   %a %d %b}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
-    },
-
-    "network": {
-        "format-wifi": " {essid} ({signalStrength}%)",
-        "format-ethernet": " Connected",
-        "format-disconnected": "⚠ Disconnected",
-        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
-        "on-click": "nm-connection-editor"
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "on-click": "activate",
+    "sort-by-number": true,
+    "persistent-workspaces": {
+      "*": 5
     }
+  },
+
+  "battery": {
+    "interval": 30,
+    "states": {
+      "warning": 25,
+      "critical": 12
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-full": "󰁹 {capacity}%",
+    "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
+    "tooltip": true,
+    "tooltip-format": "On battery · {capacity}%\n{timeTo}",
+    "tooltip-format-charging": "Plugged in, charging · {capacity}%\n{timeTo}",
+    "tooltip-format-plugged": "Plugged in · {capacity}%",
+    "tooltip-format-full": "Plugged in, fully charged · {capacity}%"
+  },
+
+  "memory": {
+    "interval": 5,
+    "format": "󰍛 {percentage}%",
+    "tooltip-format": "RAM  {used:0.1f}G / {total:0.1f}G\nSwap {swapUsed:0.1f}G / {swapTotal:0.1f}G"
+  },
+
+  "clock": {
+    "interval": 30,
+    "format": "{:%H:%M  ·  %a %d %b}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "",
+      "format": {
+        "months": "<b>{}</b>",
+        "today": "<b><u>{}</u></b>"
+      }
+    }
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟",
+    "format-icons": {
+      "headphone": "󰋋",
+      "headset": "󰋋",
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "tooltip-format": "{desc}\n{volume}%",
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "scroll-step": 5
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-connected": "󰂱",
+    "tooltip-format": "{controller_alias}\n{status}",
+    "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "blueman-manager"
+  },
+
+  "network": {
+    "interval": 5,
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀",
+    "format-disconnected": "󰤮",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "tooltip-format-wifi": "{essid} · {signalStrength}%\n{ipaddr}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "alacritty -e nmtui"
+  },
+
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip": false,
+    "on-click": "~/.local/bin/power-menu"
+  }
 }

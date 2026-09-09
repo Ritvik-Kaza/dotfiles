@@ -28,6 +28,42 @@ dotfiles/
     └── style.css          # Floating dark-pill styling to match waybar
 ```
 
+## Dependencies
+
+Everything below is for Arch Linux (`pacman`/AUR). Install what corresponds to the configs you're actually using.
+
+**Core (used by more than one config, or required for the setup to function at all):**
+```bash
+sudo pacman -S hyprland waybar alacritty tmux neovim git \
+               ttf-cascadia-mono-nerd
+```
+
+**hypr/**
+```bash
+sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq
+```
+- `grim` + `slurp`: used by `hypr/scripts/screenshots/captureArea.sh` and `captureScreen.sh`.
+- `jq`: used by `hypr/scripts/power-menu` to read monitor geometry from `hyprctl`.
+- Hyprland 0.55+ is required for the Lua config format (`hyprland.lua`); older versions expect `hyprland.conf` and won't read this repo's config.
+
+**waybar/**
+```bash
+sudo pacman -S bluez bluez-utils pavucontrol
+sudo pacman -S blueman   # or: yay -S blueberry
+sudo systemctl enable --now bluetooth
+```
+- `bluez` / `bluez-utils`: backend for the waybar bluetooth module.
+- `pavucontrol`: opened by clicking the volume module.
+- `blueman` (or `blueberry` from the AUR): opened by clicking the bluetooth module.
+- Network module click opens `alacritty -e nmtui`, which needs NetworkManager (`sudo pacman -S networkmanager`, `sudo systemctl enable --now NetworkManager`). Using `iwd` instead requires editing that line in `config.jsonc`.
+
+**wlogout/**
+```bash
+yay -S wlogout
+```
+- AUR only — needs `yay` or `paru`.
+- The lock button runs `hyprlock`; the suspend button runs `hyprlock` then `systemctl suspend`, so `hyprlock.conf` must actually be configured or the buttons will appear to do nothing.
+
 ## Usage
 
 These are plain copies, not symlinked. To apply a config, copy the relevant file(s) into place manually:

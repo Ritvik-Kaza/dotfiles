@@ -19,7 +19,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 13px;
   margin: 3px;
-  padding: 0 0 7px 0;
+  padding: 0 0 10px 0;
   transition: background 140ms ease, color 140ms ease;
 }
 

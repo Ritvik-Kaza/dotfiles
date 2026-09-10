@@ -82,23 +82,6 @@ chmod +x ~/.local/bin/power-menu ~/.config/hypr/scripts/*.sh
 
 Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart Hyprland/Waybar).
 
-## Hardcoded paths
-
-Two separate issues to watch for: the *user* being hardcoded, and the *filename* being hardcoded.
-
-**User hardcoded** — fixed. `hypr/hyprpaper.conf` used to point at `/home/Ritvik/Pictures/Wallpapers/wallpaper2.png`, which only resolves on this machine, for this user. It now uses `~/Pictures/...`, matching the pattern `hyprlock.conf` already used correctly (`$wallpaper = ~/Pictures/...`, plus `$USER` in its greeting label instead of a hardcoded name).
-
-**Filename still hardcoded** — both `hyprpaper.conf` and `hypr/hyprlock.conf` assume a file literally named `wallpaper2.png`:
-```
-preload = ~/Pictures/Wallpapers/wallpaper2.png   # hyprpaper.conf
-$wallpaper = ~/Pictures/Wallpapers/wallpaper2.png  # hyprlock.conf
-```
-Anyone cloning the repo needs a file with that exact name at that exact path, or both configs silently fail to find a wallpaper. There's no fully generic fix (something has to be named), but keep the two files' wallpaper path in sync if you ever rename the image.
-
-Other machine-specific bits, not strictly "hardcoded" but worth knowing:
-- `hyprlock.conf`'s battery module reads `/sys/class/power_supply/BAT0/capacity` — `BAT0` may not be your battery's name.
-- Everything else (scripts, `hyprland.lua` binds, `waybar/config.jsonc`) uses `$HOME`, `os.getenv("HOME")`, or `~`, so it's portable as-is.
-
 ## Notes
 
 - Bash prompt shows `user@host path` outside git repos, and `dirname git:(branch)` (with a `✗` for uncommitted changes) inside git repos.
@@ -107,4 +90,4 @@ Other machine-specific bits, not strictly "hardcoded" but worth knowing:
 - tmux prefix is `Ctrl+A` (remapped from default `Ctrl+B`). Windows can also be switched directly with `Alt+1` through `Alt+9`, no prefix needed, and 'Alt + Tab' can be used to switch to the previous window.
 - Waybar is styled as individually floating, semi-transparent pills rather than one solid bar; pairs with the `blur` layer rules in `hyprland.lua` for the waybar and wlogout namespaces.
 - Clicking the power icon in waybar runs `power-menu`, which opens a small wlogout popup (lock / suspend / shutdown) anchored under the icon instead of a fullscreen menu. Requires `wlogout` and `jq`.
-- `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Set `$wallpaper` in the file to your actual wallpaper path, and check `/sys/class/power_supply/` for your battery's actual name if it isn't `BAT0`.
+- `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.

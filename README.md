@@ -82,6 +82,23 @@ chmod +x ~/.local/bin/power-menu ~/.config/hypr/scripts/*.sh
 
 Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart Hyprland/Waybar).
 
+## Hardcoded paths
+
+Two separate issues to watch for: the *user* being hardcoded, and the *filename* being hardcoded.
+
+**User hardcoded** — fixed. `hypr/hyprpaper.conf` used to point at `/home/Ritvik/Pictures/Wallpapers/wallpaper2.png`, which only resolves on this machine, for this user. It now uses `~/Pictures/...`, matching the pattern `hyprlock.conf` already used correctly (`$wallpaper = ~/Pictures/...`, plus `$USER` in its greeting label instead of a hardcoded name).
+
+**Filename still hardcoded** — both `hyprpaper.conf` and `hypr/hyprlock.conf` assume a file literally named `wallpaper2.png`:
+```
+preload = ~/Pictures/Wallpapers/wallpaper2.png   # hyprpaper.conf
+$wallpaper = ~/Pictures/Wallpapers/wallpaper2.png  # hyprlock.conf
+```
+Anyone cloning the repo needs a file with that exact name at that exact path, or both configs silently fail to find a wallpaper. There's no fully generic fix (something has to be named), but keep the two files' wallpaper path in sync if you ever rename the image.
+
+Other machine-specific bits, not strictly "hardcoded" but worth knowing:
+- `hyprlock.conf`'s battery module reads `/sys/class/power_supply/BAT0/capacity` — `BAT0` may not be your battery's name.
+- Everything else (scripts, `hyprland.lua` binds, `waybar/config.jsonc`) uses `$HOME`, `os.getenv("HOME")`, or `~`, so it's portable as-is.
+
 ## Notes
 
 - Bash prompt shows `user@host path` outside git repos, and `dirname git:(branch)` (with a `✗` for uncommitted changes) inside git repos.

@@ -66,14 +66,10 @@ yay -S wlogout
 
 ## Hardcoded values
 
-These are literal values baked into configs rather than auto-detected. Check them before relying on this repo on a different machine.
+These are machine-specific literals baked into the configs. Anyone reusing this repo will need to change these two:
 
-- **`waybar/config.jsonc`** — network module click runs `alacritty -e nmtui`; assumes Alacritty and NetworkManager. Swap the terminal name or the whole command if you use a different terminal or `iwd`.
-- **`waybar/style.css`** — font stack is `CaskaydiaMono Nerd Font` / `JetBrainsMono Nerd Font` / `Symbols Nerd Font`; one of these must be installed or icons render as boxes. Colors/opacities were tuned against one wallpaper.
-- **`hypr/scripts/power-menu`** — `POPUP_W`, `POPUP_H`, `GAP_RIGHT`, `GAP_TOP` are tied to this repo's specific waybar height/margins; changing those in `config.jsonc` without updating this script will misplace the popup. Requires `jq` and `hyprctl -j monitors`.
-- **`wlogout/layout`** — lock action is `hyprlock`; suspend action is `hyprlock & sleep 1 && systemctl suspend`. Both assume `hyprlock.conf` is actually configured.
-- **`hypr/hyprlock.conf`** — battery path is `/sys/class/power_supply/BAT0/capacity`; check `/sys/class/power_supply/` if your battery has a different name (or remove the label if there's no battery at all). Label positions/font sizes were tuned to one screen resolution and won't recentre automatically on a different size.
-- **`hypr/hyprland.lua`** — `gaps_out = 3`, and the blur layer rules match on `namespace = "waybar"` / `"wlogout"`, which could change in a future Hyprland/Waybar/wlogout version.
+- **`hypr/hyprlock.conf`** — `$wallpaper` is set to `~/Pictures/Wallpapers/wallpaper2.png`.
+- **`hypr/hyprlock.conf`** — battery path is `/sys/class/power_supply/BAT0/capacity`; check `/sys/class/power_supply/` if your battery has a different name (or remove the label if there's no battery at all).
 
 ## Usage
 

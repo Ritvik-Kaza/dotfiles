@@ -212,7 +212,7 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    match = { class = "^(Alacritty)$" },
+    match = { class = "^(Alacritty|alacritty-fzf)$" },
     opacity = "0.80 override 0.80 override",
 })
 
@@ -399,6 +399,25 @@ hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = tr
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+
+--fzf
+
+hl.window_rule({
+    name  = "alacritty-fzf-float",
+    match = { initial_class = "^(alacritty-fzf)$" },
+    float = true,
+})
+
+hl.on("window.open", function(w)
+    if w.initial_class ~= "alacritty-fzf" then return end
+    hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
+    hl.dispatch(hl.dsp.window.resize({ x = 560, y = 320, window = w }))
+    hl.dispatch(hl.dsp.window.center({ window = w }))
+end)
+
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd(
+    "alacritty --class alacritty-fzf -e bash -ic \"nvim \\$(fzf)\""
+))
 
 
 --------------------------------

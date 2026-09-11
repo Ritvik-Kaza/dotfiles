@@ -41,3 +41,13 @@ set_prompt() {
 PROMPT_COMMAND=set_prompt
 
 alias suspend='hyprlock >/dev/null 2>&1 & sleep 1 && systemctl suspend >/dev/null 2>&1'
+
+eval $(keychain --eval id_ed25519)
+
+eval "$(fzf --bash)"
+
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow \
+  --exclude .git --exclude node_modules --exclude .cache --exclude .npm \
+  --exclude .cargo --exclude .rustup --exclude .keychain \
+  --exclude .local/share/containers'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

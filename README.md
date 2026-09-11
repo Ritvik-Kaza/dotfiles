@@ -35,8 +35,9 @@ Everything below is for Arch Linux (`pacman`/AUR). Install what corresponds to t
 **Core (used by more than one config, or required for the setup to function at all):**
 ```bash
 sudo pacman -S hyprland waybar alacritty tmux neovim git \
-               ttf-cascadia-mono-nerd
+               ttf-cascadia-mono-nerd fzf fd bat
 ```
+- `fzf` / `fd` / `bat`: fuzzy file finder used from Bash (Ctrl+T / Alt+C) and by the Super+Shift+F floating popup below.
 
 **hypr/**
 ```bash
@@ -98,3 +99,4 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - Waybar is styled as individually floating, semi-transparent pills rather than one solid bar; pairs with the `blur` layer rules in `hyprland.lua` for the waybar and wlogout namespaces.
 - Clicking the power icon in waybar runs `power-menu`, which opens a small wlogout popup (lock / suspend / shutdown) anchored under the icon instead of a fullscreen menu. Requires `wlogout` and `jq`.
 - `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.
+- `Super + Shift + F` opens a small floating Alacritty window running `fzf` piped into `nvim`, for fuzzy-finding and opening any file under `$HOME`. Floating, resizing (560×320), and centering are handled by a `window.open` event handler in `hyprland.lua`, not a static window rule — the popup gets its own opacity override too, applied via a widened `Alacritty|alacritty-fzf` regex in the opacity rule. `FZF_DEFAULT_COMMAND` (set in `.bashrc`) excludes `.git`, `node_modules`, `.cache`, `.npm`, `.cargo`, `.rustup`, `.keychain`, and `.local/share/containers` to keep results fast and relevant.

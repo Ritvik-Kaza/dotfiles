@@ -16,3 +16,9 @@
     "text" : "󰽉",
     "keybind" : "n"
 }
+{
+    "label" : "krat",
+    "action" : "setsid sh -c '~/.local/bin/theme-switch krat'",
+    "text" : "󰄽",
+    "keybind" : "k"
+}

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Small wlogout popup listing theme choices, anchored near the waybar
+# theme icon (leftmost module in the right group). Re-running while open
+# closes it, same toggle behavior as power-menu.
+#
+# NOTE: only short flags (-L -R -T -B) are used -- wlogout's long options
+# --margin-top/--margin-bottom are broken (its own option table mislabels
+# them), confirmed while building power-menu.
+
+set -euo pipefail
+
+if pgrep -x wlogout >/dev/null 2>&1; then
+    pkill -x wlogout
+    exit 0
+fi
+
+# Popup geometry, logical pixels. Two buttons, smaller than the power popup.
+POPUP_W=140
+POPUP_H=58
+
+# GAP_RIGHT is the distance from the screen's right edge to the popup's
+# left-anchor point. Because custom/theme sits leftmost in modules-right
+# (before memory/battery/etc), this number needs to roughly match how far
+# that icon actually sits from the right edge of the screen -- tune it by
+# eye after your first test; it will NOT auto-align like power-menu did,
+# since that one targets the rightmost icon.
+GAP_RIGHT=340
+GAP_TOP=52
+
+read -r MON_W MON_H MON_S MON_ID < <(
+  hyprctl -j monitors | jq -r '.[] | select(.focused == true) | "\(.width) \(.height) \(.scale) \(.id)"'
+)
+SCREEN_W=$(awk "BEGIN { printf \"%d\", $MON_W / $MON_S }")
+SCREEN_H=$(awk "BEGIN { printf \"%d\", $MON_H / $MON_S }")
+
+MARGIN_L=$(( SCREEN_W - POPUP_W - GAP_RIGHT ))
+MARGIN_R=$GAP_RIGHT
+MARGIN_T=$GAP_TOP
+MARGIN_B=$(( SCREEN_H - POPUP_H - GAP_TOP ))
+
+(( MARGIN_L < 0 )) && MARGIN_L=0
+(( MARGIN_B < 0 )) && MARGIN_B=0
+
+exec wlogout \
+  -l "$HOME/.config/theme-switcher/layout" \
+  -C "$HOME/.config/theme-switcher/style.css" \
+  -b 2 \
+  -c 0 \
+  -r 0 \
+  -L "$MARGIN_L" \
+  -R "$MARGIN_R" \
+  -T "$MARGIN_T" \
+  -B "$MARGIN_B" \
+  -P "$MON_ID" \
+  -n \
+  -p layer-shell

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Copies one theme preset's five files into place and reloads what can be
+# reloaded live. Alacritty needs a restart to pick up new colors -- that's
+# a limitation of Alacritty itself, not something this script can fix.
+
+set -euo pipefail
+
+THEME="${1:-}"
+PRESET_DIR="$HOME/.config/theme-presets/$THEME"
+
+if [[ -z "$THEME" ]]; then
+    echo "Usage: theme-switch.sh <theme-name>" >&2
+    exit 1
+fi
+
+if [[ ! -d "$PRESET_DIR" ]]; then
+    echo "No such theme preset: $PRESET_DIR" >&2
+    exit 1
+fi
+
+cp "$PRESET_DIR/waybar-style.css"  "$HOME/.config/waybar/style.css"
+cp "$PRESET_DIR/wlogout-style.css" "$HOME/.config/wlogout/style.css"
+cp "$PRESET_DIR/rofi-theme.rasi"   "$HOME/.config/rofi/theme.rasi"
+cp "$PRESET_DIR/hyprlock.conf"     "$HOME/.config/hypr/hyprlock.conf"
+cp "$PRESET_DIR/alacritty.toml"    "$HOME/.config/alacritty/alacritty.toml"
+cp "$PRESET_DIR/hyprpaper.conf"    "$HOME/.config/hypr/hyprpaper.conf"
+
+pkill -SIGUSR2 waybar || true
+
+WALLPAPER=$(grep '^\$wallpaper' "$PRESET_DIR/hyprlock.conf" | sed 's/^\$wallpaper = //')
+WALLPAPER="${WALLPAPER/#\~/$HOME}"
+if ! pgrep -x hyprpaper >/dev/null 2>&1; then
+    nohup hyprpaper >/dev/null 2>&1 &
+    disown
+    sleep 0.5
+fi
+hyprctl hyprpaper preload "$WALLPAPER" >/dev/null 2>&1 || true
+hyprctl hyprpaper wallpaper "eDP-1,$WALLPAPER" >/dev/null 2>&1 || true
+
+notify-send "Theme switched" "$THEME (reopen Alacritty windows to see new terminal colors)"

@@ -314,9 +314,6 @@ hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("killall waybar; hyprctl dispatch 'hl.dsp.exec_cmd(\"waybar\")'"))
 hl.bind(mainMod .. " + SHIFT" .. " + L", hl.dsp.exec_cmd("hyprlock & sleep 1 && systemctl suspend"))
 
-hl.bind(mainMod .. " + ESCAPE", hl.dsp.exec_cmd("hyprctl reload"))
-hl.bind(mainMod .. " + COMMA", hl.dsp.exec_cmd("nvim ~/.config/hypr/hyprland.lua"))
-
 
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
     "sh -c 'sel=$(cliphist list | rofi -dmenu -theme ~/.config/rofi/theme.rasi); [ -n \"$sel\" ] && echo \"$sel\" | cliphist decode | wl-copy'"

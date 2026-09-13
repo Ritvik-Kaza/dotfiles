@@ -219,6 +219,12 @@ hl.window_rule({
     opacity = "0.80 override 0.80 override",
 })
 
+hl.window_rule({
+    name  = "alacritty-no_blur",
+    match = { class = "^(Alacritty|alacritty-fzf)$" },
+    no_blur = false,
+})
+
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
     dwindle = {
@@ -313,7 +319,7 @@ hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("killall waybar; hyprctl dispatch 'hl.dsp.exec_cmd(\"waybar\")'"))
 hl.bind(mainMod .. " + SHIFT" .. " + L", hl.dsp.exec_cmd("hyprlock & sleep 1 && systemctl suspend"))
-
+hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.window.fullscreen({ mode = 1 }))
 
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
     "sh -c 'sel=$(cliphist list | rofi -dmenu -theme ~/.config/rofi/theme.rasi); [ -n \"$sel\" ] && echo \"$sel\" | cliphist decode | wl-copy'"

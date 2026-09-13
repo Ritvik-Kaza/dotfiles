@@ -429,7 +429,7 @@ hl.on("window.open", function(w)
     hl.dispatch(hl.dsp.window.center({ window = w }))
 end)
 
-hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd(
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(
     "alacritty --class alacritty-fzf -e bash -ic \"nvim \\$(fzf)\""
 ))
 

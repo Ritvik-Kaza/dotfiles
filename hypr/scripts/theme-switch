@@ -28,6 +28,13 @@ cp "$PRESET_DIR/hyprpaper.conf"    "$HOME/.config/hypr/hyprpaper.conf"
 cp "$PRESET_DIR/theme-switcher-style.css" "$HOME/.config/theme-switcher/style.css"
 cp "$PRESET_DIR/mako-config"       "$HOME/.config/mako/config"
 
+echo "$THEME" > ~/.config/theme-current
+
+for sock in /tmp/nvim-sockets/*.sock; do
+    [ -S "$sock" ] || continue
+    nvim --server "$sock" --remote-expr "v:lua.ThemeApply('$THEME')" >/dev/null 2>&1 || true
+done
+
 pkill -SIGUSR2 waybar || true
 makoctl reload || true
 

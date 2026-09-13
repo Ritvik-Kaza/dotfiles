@@ -1,0 +1,37 @@
+[window]
+opacity = 0.90
+padding = { x = 10, y = 8 }
+decorations = "none"
+
+[font]
+size = 11.0
+normal = { family = "CaskaydiaMono Nerd Font", style = "Regular" }
+bold   = { family = "CaskaydiaMono Nerd Font", style = "Bold" }
+
+[colors.primary]
+background = "#0a0e12"
+foreground = "#dbe6ea"
+
+[colors.cursor]
+text   = "#0a0e12"
+cursor = "#dbe6ea"
+
+[colors.normal]
+black   = "#121820"
+red     = "#e04fa0"
+green   = "#6fdba0"
+yellow  = "#e0b84f"
+blue    = "#4fa0d1"
+magenta = "#c060c8"
+cyan    = "#4fd1c5"
+white   = "#dbe6ea"
+
+[colors.bright]
+black   = "#445056"
+red     = "#f5a8d0"
+green   = "#a0e8c0"
+yellow  = "#f0d590"
+blue    = "#8fc4e8"
+magenta = "#e090e8"
+cyan    = "#8fe8e0"
+white   = "#ffffff"

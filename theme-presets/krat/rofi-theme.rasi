@@ -1,0 +1,84 @@
+* {
+    bg:         rgba(10, 14, 18, 0.90);
+    bg-alt:     rgba(18, 24, 28, 0.85);
+    fg:         #dbe6ea;
+    fg-dim:     #6b7f87;
+    accent:     rgba(79, 209, 197, 0.45);
+    accent-fg:  #ffffff;
+    border:     rgba(255, 255, 255, 0.08);
+
+    background-color:   transparent;
+    text-color:          @fg;
+}
+
+window {
+    location:    center;
+    width:       420px;
+    border:      1px;
+    border-color: @border;
+    border-radius: 16px;
+    background-color: @bg;
+    padding:     10px;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+    spacing: 10px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border:          1px;
+    border-color:    @border;
+    border-radius:   12px;
+    padding:         10px 14px;
+    spacing:         8px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    text-color: @fg-dim;
+}
+
+entry {
+    placeholder:       "Search";
+    placeholder-color: @fg-dim;
+    text-color:        @fg;
+}
+
+listview {
+    background-color: transparent;
+    lines:        8;
+    spacing:      4px;
+    scrollbar:    false;
+    fixed-height: false;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    border-radius:    12px;
+    padding:          8px 10px;
+    spacing:          10px;
+    orientation:      horizontal;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color:       @accent-fg;
+}
+
+element-icon {
+    size:    22px;
+    vertical-align: 0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

@@ -1,0 +1,10 @@
+anchor=top-right
+margin=10
+default-timeout=3000
+background-color=#0a0e12ee
+text-color=#dbe6ea
+border-color=#4fd1c5
+border-size=2
+border-radius=13
+font=CaskaydiaMono Nerd Font 11
+padding=10

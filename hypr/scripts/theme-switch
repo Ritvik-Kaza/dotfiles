@@ -26,8 +26,10 @@ cp "$PRESET_DIR/hyprlock.conf"     "$HOME/.config/hypr/hyprlock.conf"
 cp "$PRESET_DIR/alacritty.toml"    "$HOME/.config/alacritty/alacritty.toml"
 cp "$PRESET_DIR/hyprpaper.conf"    "$HOME/.config/hypr/hyprpaper.conf"
 cp "$PRESET_DIR/theme-switcher-style.css" "$HOME/.config/theme-switcher/style.css"
+cp "$PRESET_DIR/mako-config"       "$HOME/.config/mako/config"
 
 pkill -SIGUSR2 waybar || true
+makoctl reload || true
 
 WALLPAPER=$(grep '^\$wallpaper' "$PRESET_DIR/hyprlock.conf" | sed 's/^\$wallpaper = //')
 WALLPAPER="${WALLPAPER/#\~/$HOME}"

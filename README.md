@@ -14,11 +14,13 @@ dotfiles/
 │   ├── hyprland.lua      # Main Hyprland config (Lua-based, Hyprland 0.55+)
 │   ├── hyprlock.conf     # Lock screen config
 │   ├── hyprpaper.conf    # Wallpaper config
+│   ├── hypridle.conf     # Idle daemon: lock at 10min, suspend at 30min
 │   └── scripts/
 │       ├── dev-session.sh          # Opens Alacritty + tmux with nvim in one window, shell in another
 │       ├── power-menu              # Anchors a wlogout popup under the waybar power icon
 │       ├── theme-switch            # Copies a theme preset's files into place, reloads waybar/hyprpaper
 │       ├── theme-menu              # Anchors the theme-picker wlogout popup under the waybar theme icon
+│       ├── hyprpaper-init          # Starts hyprpaper and explicitly re-applies wallpaper via hyprctl (fixes wallpaper not loading on boot)
 │       └── screenshots/
 │           ├── captureArea.sh
 │           └── captureScreen.sh
@@ -56,10 +58,13 @@ sudo pacman -S hyprland waybar alacritty tmux neovim git \
 
 **hypr/**
 ```bash
-sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq
+sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome
 ```
 - `grim` + `slurp`: used by `hypr/scripts/screenshots/captureArea.sh` and `captureScreen.sh`.
-- `jq`: used by `hypr/scripts/power-menu` to read monitor geometry from `hyprctl`.
+- `jq`: used by `hypr/scripts/power-menu` and `theme-menu` to read monitor geometry from `hyprctl`.
+- `hypridle`: auto-locks after 10 minutes idle, suspends after 30 (`hypridle.conf`). Autostarted in `hyprland.lua`.
+- `cliphist`: clipboard history, bound to `Super + V`, piped through the themed rofi menu. Needs a `wl-paste --watch cliphist store` autostart line alongside it (also in `hyprland.lua`).
+- `polkit-gnome`: GUI privilege-escalation prompts for apps that need root outside a terminal. Autostarted in `hyprland.lua`.
 - Hyprland 0.55+ is required for the Lua config format (`hyprland.lua`); older versions expect `hyprland.conf` and won't read this repo's config.
 
 **waybar/**
@@ -120,7 +125,8 @@ mkdir -p ~/.local/bin
 cp hypr/scripts/power-menu ~/.local/bin/power-menu
 cp hypr/scripts/theme-switch ~/.local/bin/theme-switch
 cp hypr/scripts/theme-menu ~/.local/bin/theme-menu
-chmod +x ~/.local/bin/power-menu ~/.local/bin/theme-switch ~/.local/bin/theme-menu ~/.config/hypr/scripts/*.sh
+cp hypr/scripts/hyprpaper-init ~/.local/bin/hyprpaper-init
+chmod +x ~/.local/bin/power-menu ~/.local/bin/theme-switch ~/.local/bin/theme-menu ~/.local/bin/hyprpaper-init ~/.config/hypr/scripts/*.sh
 ```
 
 Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart Hyprland/Waybar).
@@ -136,4 +142,6 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.
 - `Super + Shift + F` opens a small floating Alacritty window running `fzf` piped into `nvim`, for fuzzy-finding and opening any file under `$HOME`. Floating, resizing (560×320), and centering are handled by a `window.open` event handler in `hyprland.lua`, not a static window rule — the popup gets its own opacity override too, applied via a widened `Alacritty|alacritty-fzf` regex in the opacity rule. `FZF_DEFAULT_COMMAND` (set in `.bashrc`) excludes `.git`, `node_modules`, `.cache`, `.npm`, `.cargo`, `.rustup`, `.keychain`, and `.local/share/containers` to keep results fast and relevant.
 - Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.
+- **Wallpaper not loading on boot:** `hyprpaper`'s own `wallpaper =` config directive doesn't reliably apply at its own startup on this system — only the live `hyprctl hyprpaper wallpaper ...` IPC command actually works (discovered while debugging the krat theme, where the same fix was needed). `hypr/scripts/hyprpaper-init` works around this: it starts hyprpaper, waits for its IPC socket to come up, then explicitly re-sends the wallpaper command by reading the path out of `hyprpaper.conf`. `hyprland.lua`'s autostart calls this script instead of `hyprpaper` directly.
+- `Super + V` opens clipboard history (cliphist piped through the themed rofi menu); `Super + Shift + V` toggles window floating (moved off `Super + V` to make room). The cliphist bind guards against Esc/empty selection — piping an empty rofi result straight into `wl-copy` would silently blank the clipboard, so the script checks for a non-empty selection before copying.
 - Theme switching: a paintbrush icon sits leftmost in waybar's right-side module group. Clicking it runs `theme-menu`, which opens a small wlogout-based popup (same mechanism as `power-menu`) listing "Dark", "Rose", "Nokron" (violet/indigo with a warm gold accent, inspired by a starry-ruins wallpaper), and "Krat" (steel-blue-grey base with teal and magenta accents, gothic-noir hotel wallpaper). Picking one runs `theme-switch <name>`, which copies that preset's 8 files (waybar, wlogout, rofi, hyprlock, alacritty, hyprpaper, the theme-switcher popup's own style, and mako's notification styling) into place, restarts waybar (`SIGUSR2`), hyprpaper, and reloads mako (`makoctl reload`), then fires a notification. Each preset's `action` in `theme-switcher/layout` wraps the command in `setsid sh -c '...'` — without `setsid`, wlogout kills the spawned process when its own window closes (which happens immediately after a click), so anything past the first couple of fast commands (like the `hyprctl hyprpaper` calls) would silently never run. Alacritty only picks up new colors on freshly-opened windows; already-open terminals need to be closed and reopened. The picker popup's own background/border themes along with everything else, but each button's *hover color* (blue for Dark, rose for Rose, violet for Nokron, teal for Krat) stays fixed across all four presets by design — it identifies which theme that button switches *to*, not the currently active one. The popup widened to `280px`/`-b 4` to fit the fourth button.

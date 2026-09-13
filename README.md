@@ -33,7 +33,7 @@ dotfiles/
 │   ├── config.rasi        # Rofi config: drun mode, icons, font
 │   └── theme.rasi          # Dark floating-pill theme matching waybar/wlogout
 ├── theme-presets/
-│   ├── dark/              # Default theme: 8 files — waybar/wlogout/rofi/hyprlock/alacritty/hyprpaper/theme-switcher/mako
+│   ├── dark/              # Neutral dark theme: 8 files — waybar/wlogout/rofi/hyprlock/alacritty/hyprpaper/theme-switcher/mako
 │   ├── rose/              # Dusty-rose accent theme, same 8 files, wallpaper3
 │   ├── nokron/            # Violet/indigo with warm gold accent, same 8 files, wallpaper4
 │   └── krat/              # Steel-grey base, teal/magenta accents, gothic-noir wallpaper5
@@ -108,7 +108,8 @@ These are machine-specific literals baked into the configs. Anyone reusing this 
 - **`hypr/hyprlock.conf`** — `$wallpaper` is set to `~/Pictures/Wallpapers/wallpaper2.png`.
 - **`hypr/hyprlock.conf`** — battery path is `/sys/class/power_supply/BAT0/capacity`; check `/sys/class/power_supply/` if your battery has a different name (or remove the label if there's no battery at all).
 - **`theme-presets/dark/`** — wallpaper is `wallpaper2.png`; **`theme-presets/rose/`** — wallpaper is `wallpaper3.jpeg`; **`theme-presets/nokron/`** — wallpaper is `wallpaper4.png`; **`theme-presets/krat/`** — wallpaper is `wallpaper5.jpeg`. Both `hyprlock.conf` and `hyprpaper.conf` in each preset must agree on the path, since `theme-switch` reads the wallpaper path *from* the preset's `hyprlock.conf` to feed to `hyprctl hyprpaper`.
-- **Duplication risk, not a bug:** `waybar/style.css`, `wlogout/style.css`, and `rofi/theme.rasi` at the top level are mirrored inside `theme-presets/dark/` with the same content. The top-level copies are what a fresh install starts from; the preset copies are what `theme-switch dark` restores. Editing one without the other means a future `theme-switch dark` will silently revert a direct edit to the top-level file — after tweaking colors directly, either update the matching preset file too or just run `theme-switch dark` to resync.
+- **Duplication risk, not a bug:** `waybar/style.css`, `wlogout/style.css`, `theme-switcher/style.css`, `rofi/theme.rasi`, and `alacritty/alacritty.toml` at the top level are meant to mirror whichever preset they were last synced from, and `theme-switch <name>` overwrites these same paths with that preset's files. Editing one of them directly without updating the matching preset means a future `theme-switch <name>` on that theme will silently revert the edit — after tweaking colors directly, either update the matching preset file too or just re-run `theme-switch <name>` to resync.
+- **Top-level files currently reflect `krat`, not `dark`:** `waybar/style.css`, `wlogout/style.css`, `theme-switcher/style.css`, and `alacritty/alacritty.toml` at the top level currently hold `theme-presets/krat/`'s colors (from an earlier sync off a live machine that had krat active), while `hypr/hyprlock.conf` and `hypr/hyprpaper.conf` at the top level still point at `wallpaper2.png` (dark's wallpaper) — a mixed state, left as-is intentionally as the starting point for a fresh install rather than reconciled back to dark. `rofi/theme.rasi` is unaffected since it isn't themed per-preset. If you clone this repo fresh, run `theme-switch <name>` for whichever theme you actually want right after copying files — don't assume the top-level copy alone gives a fully consistent look.
 
 ## Usage
 

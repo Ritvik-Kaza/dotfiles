@@ -1,0 +1,42 @@
+* {
+  font-family: "CaskaydiaMono Nerd Font", "JetBrainsMono Nerd Font", "Symbols Nerd Font", monospace;
+  font-size: 20px;
+  font-weight: 400;
+  background-image: none;
+  box-shadow: none;
+  border: none;
+  text-shadow: none;
+  outline: none;
+}
+
+window {
+  background: transparent;
+}
+
+button {
+  color: #ededf0;
+  background: rgba(18, 18, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 13px;
+  margin: 3px;
+  padding: 0 0 7px 0;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+button:hover,
+button:focus {
+  background: rgba(18, 18, 20, 0.80);
+  color: #ffffff;
+}
+
+#lock:hover {
+  color: #8ab4f8;
+}
+
+#suspend:hover {
+  color: #f0c060;
+}
+
+#shutdown:hover {
+  color: #f28b8b;
+}

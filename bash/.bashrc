@@ -56,3 +56,4 @@ nvim() {
     mkdir -p /tmp/nvim-sockets
     command nvim --listen "/tmp/nvim-sockets/$$.sock" "$@"
 }
+export PATH="$HOME/.local/bin:$PATH"

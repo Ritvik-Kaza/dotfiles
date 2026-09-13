@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# hyprpaper's own config-file "wallpaper =" directive doesn't reliably apply
+# at startup on this system -- only the live hyprctl IPC command does
+# (confirmed while debugging the krat theme). This script starts hyprpaper
+# then explicitly re-applies the wallpaper via hyprctl once it's ready.
+
+pkill hyprpaper 2>/dev/null
+sleep 0.3
+
+hyprpaper &
+disown
+
+# wait for hyprpaper's IPC socket to actually come up before talking to it
+for i in $(seq 1 20); do
+    if hyprctl hyprpaper listactive >/dev/null 2>&1; then
+        break
+    fi
+    sleep 0.2
+done
+
+WALLPAPER=$(grep '^wallpaper' ~/.config/hypr/hyprpaper.conf | sed -E 's/^wallpaper = [^,]+,//')
+
+if [ -n "$WALLPAPER" ]; then
+    hyprctl hyprpaper preload "$WALLPAPER" >/dev/null 2>&1 || true
+    hyprctl hyprpaper wallpaper "eDP-1,$WALLPAPER"
+fi

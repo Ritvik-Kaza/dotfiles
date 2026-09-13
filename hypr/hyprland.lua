@@ -58,8 +58,11 @@ local menu = "rofi -show drun"
 hl.on("hyprland.start", function ()
   hl.exec_cmd("hyprlock")
   hl.exec_cmd("mako")
-  hl.exec_cmd("hyprpaper")
+  hl.exec_cmd("~/.local/bin/hyprpaper-init")
   hl.exec_cmd("waybar")
+  hl.exec_cmd("wl-paste --watch cliphist store")
+  hl.exec_cmd("hypridle")
+  hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
 end)
 
 -------------------------------
@@ -298,7 +301,7 @@ local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
@@ -310,6 +313,14 @@ hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("killall waybar; hyprctl dispatch 'hl.dsp.exec_cmd(\"waybar\")'"))
 hl.bind(mainMod .. " + SHIFT" .. " + L", hl.dsp.exec_cmd("hyprlock & sleep 1 && systemctl suspend"))
+
+hl.bind(mainMod .. " + ESCAPE", hl.dsp.exec_cmd("hyprctl reload"))
+hl.bind(mainMod .. " + COMMA", hl.dsp.exec_cmd("nvim ~/.config/hypr/hyprland.lua"))
+
+
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
+    "sh -c 'sel=$(cliphist list | rofi -dmenu -theme ~/.config/rofi/theme.rasi); [ -n \"$sel\" ] && echo \"$sel\" | cliphist decode | wl-copy'"
+))
 
 -- Screenshots
 hl.bind("Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureAll.sh"))

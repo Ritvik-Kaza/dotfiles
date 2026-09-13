@@ -6,6 +6,8 @@ Personal configuration files for my Arch Linux + Hyprland setup.
 
 ```
 dotfiles/
+├── alacritty/
+│   └── alacritty.toml     # Base terminal config: dark theme colors, opacity, font
 ├── bash/
 │   └── .bashrc          # Custom prompt: git-aware, branch + dirty state indicator
 ├── hypr/
@@ -15,6 +17,8 @@ dotfiles/
 │   └── scripts/
 │       ├── dev-session.sh          # Opens Alacritty + tmux with nvim in one window, shell in another
 │       ├── power-menu              # Anchors a wlogout popup under the waybar power icon
+│       ├── theme-switch            # Copies a theme preset's files into place, reloads waybar/hyprpaper
+│       ├── theme-menu              # Anchors the theme-picker wlogout popup under the waybar theme icon
 │       └── screenshots/
 │           ├── captureArea.sh
 │           └── captureScreen.sh
@@ -23,6 +27,12 @@ dotfiles/
 ├── rofi/
 │   ├── config.rasi        # Rofi config: drun mode, icons, font
 │   └── theme.rasi          # Dark floating-pill theme matching waybar/wlogout
+├── theme-presets/
+│   ├── dark/              # Default theme: waybar/wlogout/rofi/hyprlock/alacritty/hyprpaper, all matching
+│   └── rose/              # Dusty-rose accent theme, same 6 files, wallpaper3
+├── theme-switcher/
+│   ├── layout             # wlogout layout for the theme picker (Dark / Rose buttons)
+│   └── style.css          # Matches wlogout/style.css styling
 ├── waybar/
 │   ├── config.jsonc      # Waybar module configuration
 │   └── style.css         # Waybar styling
@@ -74,12 +84,18 @@ sudo pacman -S rofi papirus-icon-theme
 ```
 - `papirus-icon-theme`: `config.rasi` sets `icon-theme: "Papirus-Dark"`; swap the name if you use a different icon set.
 
+**theme-switcher/ and theme-presets/**
+
+No new packages — everything needed (`hyprctl`, `pkill`, `setsid`, `notify-send`) ships with `hyprland`, `util-linux`, and a notification daemon (`dunst`/`mako`) if you want the "Theme switched" confirmation to actually display. `setsid` is required specifically to detach the switch script from wlogout's process — wlogout exits immediately after a button click and will kill any still-attached child process before it finishes, which is why the picker's `action` fields wrap the command in `setsid sh -c '...'` rather than calling `theme-switch` directly.
+
 ## Hardcoded values
 
 These are machine-specific literals baked into the configs. Anyone reusing this repo will need to change these two:
 
 - **`hypr/hyprlock.conf`** — `$wallpaper` is set to `~/Pictures/Wallpapers/wallpaper2.png`.
 - **`hypr/hyprlock.conf`** — battery path is `/sys/class/power_supply/BAT0/capacity`; check `/sys/class/power_supply/` if your battery has a different name (or remove the label if there's no battery at all).
+- **`theme-presets/dark/`** — wallpaper is `wallpaper2.png`; **`theme-presets/rose/`** — wallpaper is `wallpaper3.jpeg`. Both `hyprlock.conf` and `hyprpaper.conf` in each preset must agree on the path, since `theme-switch` reads the wallpaper path *from* the preset's `hyprlock.conf` to feed to `hyprctl hyprpaper`.
+- **Duplication risk, not a bug:** `waybar/style.css`, `wlogout/style.css`, and `rofi/theme.rasi` at the top level are mirrored inside `theme-presets/dark/` with the same content. The top-level copies are what a fresh install starts from; the preset copies are what `theme-switch dark` restores. Editing one without the other means a future `theme-switch dark` will silently revert a direct edit to the top-level file — after tweaking colors directly, either update the matching preset file too or just run `theme-switch dark` to resync.
 
 ## Usage
 
@@ -91,11 +107,16 @@ cp -r hypr/* ~/.config/hypr/
 cp -r waybar/* ~/.config/waybar/
 cp -r wlogout/* ~/.config/wlogout/
 cp -r rofi/* ~/.config/rofi/
+cp -r theme-switcher/* ~/.config/theme-switcher/
+cp -r theme-presets ~/.config/theme-presets
+cp -r alacritty/* ~/.config/alacritty/
 cp tmux/.tmux.conf ~/.tmux.conf
 
 mkdir -p ~/.local/bin
 cp hypr/scripts/power-menu ~/.local/bin/power-menu
-chmod +x ~/.local/bin/power-menu ~/.config/hypr/scripts/*.sh
+cp hypr/scripts/theme-switch ~/.local/bin/theme-switch
+cp hypr/scripts/theme-menu ~/.local/bin/theme-menu
+chmod +x ~/.local/bin/power-menu ~/.local/bin/theme-switch ~/.local/bin/theme-menu ~/.config/hypr/scripts/*.sh
 ```
 
 Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart Hyprland/Waybar).
@@ -111,3 +132,4 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.
 - `Super + Shift + F` opens a small floating Alacritty window running `fzf` piped into `nvim`, for fuzzy-finding and opening any file under `$HOME`. Floating, resizing (560×320), and centering are handled by a `window.open` event handler in `hyprland.lua`, not a static window rule — the popup gets its own opacity override too, applied via a widened `Alacritty|alacritty-fzf` regex in the opacity rule. `FZF_DEFAULT_COMMAND` (set in `.bashrc`) excludes `.git`, `node_modules`, `.cache`, `.npm`, `.cargo`, `.rustup`, `.keychain`, and `.local/share/containers` to keep results fast and relevant.
 - Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.
+- Theme switching: a paintbrush icon sits leftmost in waybar's right-side module group. Clicking it runs `theme-menu`, which opens a small wlogout-based popup (same mechanism as `power-menu`) listing "Dark" and "Rose". Picking one runs `theme-switch <name>`, which copies that preset's waybar/wlogout/rofi/hyprlock/alacritty/hyprpaper files into place, restarts waybar (`SIGUSR2`) and hyprpaper, and fires a notification. Each preset's `action` in `theme-switcher/layout` wraps the command in `setsid sh -c '...'` — without `setsid`, wlogout kills the spawned process when its own window closes (which happens immediately after a click), so anything past the first couple of fast commands (like the `hyprctl hyprpaper` calls) would silently never run. Alacritty only picks up new colors on freshly-opened windows; already-open terminals need to be closed and reopened.

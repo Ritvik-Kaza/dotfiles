@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Usage: webapp-install "Name" "https://url.com"
+# Creates a .desktop entry that opens the site chromeless via chromium --app,
+# with a real icon fetched from the site's favicon, so it shows up in
+# rofi/app launchers like a real app with its own icon and window class.
+
+set -euo pipefail
+
+NAME="${1:?Usage: webapp-install \"Name\" \"https://url.com\"}"
+URL="${2:?Usage: webapp-install \"Name\" \"https://url.com\"}"
+
+# WM class: strip spaces/punctuation so it's a valid, predictable class name
+CLASS=$(echo "$NAME" | tr -d '[:space:][:punct:]')
+ICON_NAME="webapp-${CLASS,,}"
+
+# Extract domain from URL for the favicon service
+DOMAIN=$(echo "$URL" | sed -E 's#^https?://##; s#/.*$##')
+
+ICON_DIR="$HOME/.local/share/icons/hicolor/128x128/apps"
+mkdir -p "$ICON_DIR"
+ICON_PATH="$ICON_DIR/${ICON_NAME}.png"
+
+curl -sL "https://www.google.com/s2/favicons?sz=128&domain=${DOMAIN}" -o "$ICON_PATH" || true
+
+# Fall back to a generic icon if the download failed or came back empty
+if [ ! -s "$ICON_PATH" ]; then
+    rm -f "$ICON_PATH"
+    ICON_NAME="web-browser"
+else
+    gtk-update-icon-cache -f "$HOME/.local/share/icons/hicolor" >/dev/null 2>&1 || true
+fi
+
+mkdir -p ~/.local/share/applications
+DESKTOP_FILE="$HOME/.local/share/applications/webapp-${CLASS,,}.desktop"
+
+cat > "$DESKTOP_FILE" << DESKTOP
+[Desktop Entry]
+Name=$NAME
+Exec=env DRI_PRIME=0 LIBVA_DRIVER_NAME=iHD chromium --app=$URL --class=$CLASS --ozone-platform=wayland --enable-features=UseOzonePlatform --use-angle=gl --disable-features=Vulkan,VulkanFromANGLE
+Icon=$ICON_NAME
+Type=Application
+Categories=Network;
+StartupWMClass=$CLASS
+DESKTOP
+
+echo "Created: $DESKTOP_FILE"
+echo "Icon: $ICON_NAME ($([ -f "$ICON_PATH" ] && echo "fetched from favicon" || echo "generic fallback"))"
+echo "Window class for Hyprland rules: $CLASS"
+echo "Should now appear in rofi as: $NAME"

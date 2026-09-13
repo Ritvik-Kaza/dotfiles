@@ -1,0 +1,12 @@
+{
+    "label" : "dark",
+    "action" : "setsid sh -c '~/.local/bin/theme-switch dark'",
+    "text" : "󰖨",
+    "keybind" : "d"
+}
+{
+    "label" : "rose",
+    "action" : "setsid sh -c '~/.local/bin/theme-switch rose'",
+    "text" : "󰉼",
+    "keybind" : "r"
+}

@@ -1,5 +1,5 @@
 [window]
-opacity = 0.90
+opacity = 1.0
 padding = { x = 10, y = 8 }
 decorations = "none"
 
@@ -9,29 +9,29 @@ normal = { family = "CaskaydiaMono Nerd Font", style = "Regular" }
 bold   = { family = "CaskaydiaMono Nerd Font", style = "Bold" }
 
 [colors.primary]
-background = "#141416"
-foreground = "#e9e9ec"
+background = "#0a0e12"
+foreground = "#dbe6ea"
 
 [colors.cursor]
-text   = "#141416"
-cursor = "#e9e9ec"
+text   = "#0a0e12"
+cursor = "#dbe6ea"
 
 [colors.normal]
-black   = "#1c1c1e"
-red     = "#f28b8b"
-green   = "#7ee2a8"
-yellow  = "#f0c060"
-blue    = "#8ab4f8"
-magenta = "#c9a0f0"
-cyan    = "#7fd4d4"
-white   = "#e9e9ec"
+black   = "#121820"
+red     = "#e04fa0"
+green   = "#6fdba0"
+yellow  = "#e0b84f"
+blue    = "#4fa0d1"
+magenta = "#c060c8"
+cyan    = "#4fd1c5"
+white   = "#dbe6ea"
 
 [colors.bright]
-black   = "#4a4a50"
-red     = "#ffb3b3"
-green   = "#a0f0c0"
-yellow  = "#ffd98a"
-blue    = "#aecdfb"
-magenta = "#ddbaf8"
-cyan    = "#a3e6e6"
+black   = "#445056"
+red     = "#f5a8d0"
+green   = "#a0e8c0"
+yellow  = "#f0d590"
+blue    = "#8fc4e8"
+magenta = "#e090e8"
+cyan    = "#8fe8e0"
 white   = "#ffffff"

@@ -326,7 +326,6 @@ hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
 ))
 
 -- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureAll.sh"))
 hl.bind("SUPER + Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureScreen.sh"))
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureArea.sh"))
 

@@ -15,7 +15,7 @@ if pgrep -x wlogout >/dev/null 2>&1; then
 fi
 
 # Popup geometry, logical pixels. Two buttons, smaller than the power popup.
-POPUP_W=210
+POPUP_W=280
 POPUP_H=58
 
 # GAP_RIGHT is the distance from the screen's right edge to the popup's
@@ -24,7 +24,7 @@ POPUP_H=58
 # that icon actually sits from the right edge of the screen -- tune it by
 # eye after your first test; it will NOT auto-align like power-menu did,
 # since that one targets the rightmost icon.
-GAP_RIGHT=340
+GAP_RIGHT=280
 GAP_TOP=52
 
 read -r MON_W MON_H MON_S MON_ID < <(
@@ -44,7 +44,7 @@ MARGIN_B=$(( SCREEN_H - POPUP_H - GAP_TOP ))
 exec wlogout \
   -l "$HOME/.config/theme-switcher/layout" \
   -C "$HOME/.config/theme-switcher/style.css" \
-  -b 3 \
+  -b 4 \
   -c 0 \
   -r 0 \
   -L "$MARGIN_L" \

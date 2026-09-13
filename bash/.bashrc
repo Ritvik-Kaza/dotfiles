@@ -51,3 +51,8 @@ export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow \
   --exclude .cargo --exclude .rustup --exclude .keychain \
   --exclude .local/share/containers'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+nvim() {
+    mkdir -p /tmp/nvim-sockets
+    command nvim --listen "/tmp/nvim-sockets/$$.sock" "$@"
+}

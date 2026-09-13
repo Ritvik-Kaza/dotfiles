@@ -10,3 +10,9 @@
     "text" : "󰉼",
     "keybind" : "r"
 }
+{
+    "label" : "nokron",
+    "action" : "setsid sh -c '~/.local/bin/theme-switch nokron'",
+    "text" : "󰽉",
+    "keybind" : "n"
+}

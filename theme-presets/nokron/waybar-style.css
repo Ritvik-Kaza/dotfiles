@@ -1,0 +1,144 @@
+* {
+  font-family: "CaskaydiaMono Nerd Font", "JetBrainsMono Nerd Font", "Symbols Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+window#waybar {
+  background: transparent;
+}
+
+tooltip {
+  background: rgba(14, 12, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+tooltip label {
+  color: #e6e3f0;
+  padding: 4px 6px;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background: transparent;
+  padding: 0;
+}
+
+#workspaces {
+  background: rgba(14, 12, 22, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  margin: 4px 3px;
+  padding: 0 3px;
+}
+
+#workspaces button {
+  min-width: 20px;
+  padding: 0 6px;
+  margin: 3px 1px;
+  border-radius: 11px;
+  background: transparent;
+  color: #8b859e;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+#workspaces button.empty {
+  color: #5f5a70;
+}
+
+#workspaces button:hover {
+  background: rgba(138, 127, 196, 0.14);
+  color: #e6e3f0;
+}
+
+#workspaces button.active {
+  background: rgba(138, 127, 196, 0.30);
+  color: #ffffff;
+}
+
+#workspaces button.urgent {
+  background: rgba(212, 168, 106, 0.28);
+  color: #f0cf9a;
+}
+
+#battery,
+#memory,
+#clock,
+#pulseaudio,
+#bluetooth,
+#network,
+#custom-power,
+#custom-theme {
+  background: rgba(14, 12, 22, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  margin: 4px 3px;
+  padding: 0 10px;
+  color: #e6e3f0;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+#battery:hover,
+#memory:hover,
+#clock:hover,
+#pulseaudio:hover,
+#bluetooth:hover,
+#network:hover,
+#custom-power:hover,
+#custom-theme:hover {
+  background: rgba(138, 127, 196, 0.20);
+}
+
+#clock {
+  padding: 0 14px;
+  color: #ffffff;
+}
+
+#battery.warning:not(.charging) {
+  color: #d4a86a;
+}
+
+#battery.critical:not(.charging) {
+  color: #e08a92;
+}
+
+#battery.charging,
+#battery.plugged {
+  color: #9bcf9f;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+  color: #5f5a70;
+}
+
+#network.disconnected {
+  color: #e08a92;
+}
+
+#pulseaudio.muted {
+  color: #5f5a70;
+}
+
+#custom-power {
+  padding: 0 12px;
+  color: #d97d88;
+}
+
+#custom-power:hover {
+  background: rgba(217, 125, 136, 0.20);
+  color: #f2a9ae;
+}
+
+#custom-theme {
+  padding-top: 2px;
+  padding-left: 6px;
+  padding-right: 14px;
+}

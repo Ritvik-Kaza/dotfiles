@@ -14,9 +14,9 @@ window {
 }
 
 button {
-  color: #ededf0;
-  background: rgba(18, 18, 20, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #dbe6ea;
+  background: rgba(10, 14, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 13px;
   margin: 3px;
   padding: 0 0 10px 0;
@@ -25,7 +25,7 @@ button {
 
 button:hover,
 button:focus {
-  background: rgba(18, 18, 20, 0.80);
+  background: rgba(79, 209, 197, 0.30);
   color: #ffffff;
 }
 
@@ -35,4 +35,16 @@ button:focus {
 
 #rose:hover {
   color: #b6798c;
+}
+
+#nokron:hover {
+  color: #8a7fc4;
+}
+
+#krat:hover {
+  color: #4fd1c5;
+}
+
+#dark {
+  padding-right: 4px;
 }

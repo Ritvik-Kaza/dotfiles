@@ -76,7 +76,8 @@ tooltip label {
 #pulseaudio,
 #bluetooth,
 #network,
-#custom-power {
+#custom-power,
+#custom-theme {
   background: rgba(22, 22, 24, 0.42);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 15px;
@@ -92,13 +93,9 @@ tooltip label {
 #pulseaudio:hover,
 #bluetooth:hover,
 #network:hover,
-#custom-power:hover {
+#custom-power:hover,
+#custom-theme:hover {
   background: rgba(38, 38, 42, 0.62);
-}
-
-#network {
-  padding-left: 6px;
-  padding-right: 10px;
 }
 
 #clock {
@@ -140,4 +137,10 @@ tooltip label {
 #custom-power:hover {
   background: rgba(242, 139, 139, 0.20);
   color: #ffb3b3;
+}
+
+#custom-theme {
+  padding-top: 2px;
+  padding-left: 6px;
+  padding-right: 14px;
 }

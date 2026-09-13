@@ -11,7 +11,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["memory", "battery", "pulseaudio", "bluetooth", "network", "custom/power"],
+  "modules-right": ["custom/theme", "memory", "battery", "pulseaudio", "bluetooth", "network", "custom/power"],
 
   "hyprland/workspaces": {
     "format": "{name}",
@@ -96,6 +96,13 @@
     "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
     "tooltip-format-disconnected": "Disconnected",
     "on-click": "alacritty -e nmtui"
+  },
+
+  "custom/theme": {
+    "format": "\uf1fc",
+    "tooltip": true,
+    "tooltip-format": "Switch theme",
+    "on-click": "~/.local/bin/theme-menu"
   },
 
   "custom/power": {

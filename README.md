@@ -20,6 +20,9 @@ dotfiles/
 │           └── captureScreen.sh
 ├── tmux/
 │   └── .tmux.conf        # tmux config: custom prefix, mouse support, Alt+number window switching
+├── rofi/
+│   ├── config.rasi        # Rofi config: drun mode, icons, font
+│   └── theme.rasi          # Dark floating-pill theme matching waybar/wlogout
 ├── waybar/
 │   ├── config.jsonc      # Waybar module configuration
 │   └── style.css         # Waybar styling
@@ -65,6 +68,12 @@ yay -S wlogout
 - AUR only — needs `yay` or `paru`.
 - The lock button runs `hyprlock`; the suspend button runs `hyprlock` then `systemctl suspend`, so `hyprlock.conf` must actually be configured or the buttons will appear to do nothing.
 
+**rofi/**
+```bash
+sudo pacman -S rofi papirus-icon-theme
+```
+- `papirus-icon-theme`: `config.rasi` sets `icon-theme: "Papirus-Dark"`; swap the name if you use a different icon set.
+
 ## Hardcoded values
 
 These are machine-specific literals baked into the configs. Anyone reusing this repo will need to change these two:
@@ -81,6 +90,7 @@ cp bash/.bashrc ~/.bashrc
 cp -r hypr/* ~/.config/hypr/
 cp -r waybar/* ~/.config/waybar/
 cp -r wlogout/* ~/.config/wlogout/
+cp -r rofi/* ~/.config/rofi/
 cp tmux/.tmux.conf ~/.tmux.conf
 
 mkdir -p ~/.local/bin
@@ -100,3 +110,4 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - Clicking the power icon in waybar runs `power-menu`, which opens a small wlogout popup (lock / suspend / shutdown) anchored under the icon instead of a fullscreen menu. Requires `wlogout` and `jq`.
 - `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.
 - `Super + Shift + F` opens a small floating Alacritty window running `fzf` piped into `nvim`, for fuzzy-finding and opening any file under `$HOME`. Floating, resizing (560×320), and centering are handled by a `window.open` event handler in `hyprland.lua`, not a static window rule — the popup gets its own opacity override too, applied via a widened `Alacritty|alacritty-fzf` regex in the opacity rule. `FZF_DEFAULT_COMMAND` (set in `.bashrc`) excludes `.git`, `node_modules`, `.cache`, `.npm`, `.cargo`, `.rustup`, `.keychain`, and `.local/share/containers` to keep results fast and relevant.
+- Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.

@@ -330,29 +330,35 @@ hl.bind("SUPER + Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scr
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureArea.sh"))
 
 -- Volume/media keys
+-- locked=true: also usable while hyprlock is up. repeating=true: holding the
+-- key keeps stepping. These used to be duplicated in a second "laptop
+-- multimedia keys" block below with the same options but no toast -- since
+-- `locked` doesn't restrict a bind to ONLY firing while locked (it just also
+-- allows it while locked), both binds fired on every unlocked press, doubling
+-- the step. Consolidated into one bind per key instead.
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(
     "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"Volume: $(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')%\""
-))
+), { locked = true, repeating = true })
 
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(
     "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"Volume: $(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')%\""
-))
+), { locked = true, repeating = true })
 
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd(
     "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo Muted || echo Unmuted)\""
-))
+), { locked = true, repeating = true })
 
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(
     "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo 'Mic Muted' || echo 'Mic Unmuted')\""
-))
+), { locked = true, repeating = true })
 
 
 -- Brightness keys (absolute steps, avoids inconsistent relative jumps)
@@ -362,7 +368,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(
     "[ $target -gt 100 ] && target=100; " ..
     "brightnessctl set ${target}% && " ..
     "notify-send -h string:x-canonical-private-synchronous:brightness -t 1500 \"Brightness: ${target}%\""
-))
+), { locked = true, repeating = true })
 
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(
     "current=$(brightnessctl -m | awk -F, '{print $4}' | tr -d '%'); " ..
@@ -370,7 +376,7 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(
     "[ $target -lt 5 ] && target=5; " ..
     "brightnessctl set ${target}% && " ..
     "notify-send -h string:x-canonical-private-synchronous:brightness -t 1500 \"Brightness: ${target}%\""
-))
+), { locked = true, repeating = true })
 
 
 -- Move focus with mainMod + arrow keys
@@ -398,14 +404,6 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
-
--- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 
 -- Requires playerctl
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })

@@ -36,7 +36,7 @@ DESKTOP_FILE="$HOME/.local/share/applications/webapp-${CLASS,,}.desktop"
 cat > "$DESKTOP_FILE" << DESKTOP
 [Desktop Entry]
 Name=$NAME
-Exec=env DRI_PRIME=0 LIBVA_DRIVER_NAME=iHD chromium --app=$URL --class=$CLASS --ozone-platform=wayland --enable-features=UseOzonePlatform --use-angle=gl --disable-features=Vulkan,VulkanFromANGLE
+Exec=chromium --app=$URL --class=$CLASS --ozone-platform=wayland --enable-features=UseOzonePlatform
 Icon=$ICON_NAME
 Type=Application
 Categories=Network;

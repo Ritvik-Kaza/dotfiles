@@ -1,0 +1,44 @@
+#!/bin/bash
+# Fuzzy-find a FILE by searching text inside it, not by its filename --
+# companion to the plain filename fzf popup (Super + F). Type a query, get
+# back a live-updating list of files that contain it, pick one, it opens.
+# This never inserts/copies the matched text itself, only the filename.
+#
+# Usage: find-text [all]
+#   (no arg) -- plain text files only, via ripgrep. Fast.
+#   all      -- also PDFs/docs/archives/images (OCR) via ripgrep-all. Slower,
+#               since it has to extract text from each one before searching.
+
+cd "$HOME" || exit 1
+
+if [ "${1:-}" = "all" ]; then
+    RG=rga
+else
+    RG=rg
+fi
+
+GLOBS="-g '!.git' -g '!node_modules' -g '!.cache' -g '!.npm' -g '!.cargo' -g '!.rustup' -g '!.keychain' -g '!.local/share/containers'"
+
+selected=$(
+  fzf --disabled --ansi \
+    --bind "start:reload:$RG --files-with-matches --smart-case $GLOBS ''" \
+    --bind "change:reload:sleep 0.1; $RG --files-with-matches --smart-case $GLOBS {q} || true" \
+    --preview "$RG --color=always --smart-case $GLOBS --context 2 {q} {} 2>/dev/null | head -50" \
+    --preview-window=right:50%:wrap
+)
+
+[ -z "$selected" ] && exit 0
+
+# nvim can't meaningfully open a PDF/docx/etc -- hand those to whatever the
+# desktop has associated instead (Papers for PDFs, etc). setsid + disown
+# detaches it so this popup's terminal can close instead of staying attached
+# to whatever xdg-open launches (same reason theme-switch uses setsid and
+# hyprpaper-init uses nohup/disown elsewhere in this repo). The short sleep
+# afterward is load-bearing, not padding: there's a narrow window right after
+# forking where the child can still get killed by this terminal closing
+# before the detach fully lands -- confirmed by testing, it fails silently
+# without this.
+case "$(file --mime-type -b "$selected")" in
+    text/*) nvim "$selected" ;;
+    *)      setsid xdg-open "$selected" >/dev/null 2>&1 & disown; sleep 0.3 ;;
+esac

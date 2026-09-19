@@ -14,7 +14,7 @@ if pgrep -x wlogout >/dev/null 2>&1; then
 fi
 
 # Popup geometry, logical pixels. Whole card is POPUP_W x POPUP_H.
-POPUP_W=200
+POPUP_W=270
 POPUP_H=58
 GAP_RIGHT=12   # matches waybar margin-right
 GAP_TOP=52     # waybar margin-top (8) + height (34) + 10px gap
@@ -37,7 +37,7 @@ MARGIN_B=$(( SCREEN_H - POPUP_H - GAP_TOP ))
 exec wlogout \
   -l "$HOME/.config/wlogout/layout" \
   -C "$HOME/.config/wlogout/style.css" \
-  -b 3 \
+  -b 4 \
   -c 0 \
   -r 0 \
   -L "$MARGIN_L" \

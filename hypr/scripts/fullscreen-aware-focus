@@ -1,0 +1,30 @@
+#!/bin/bash
+# Usage: fullscreen-aware-focus <left|right|up|down>
+# movefocus_cycles_fullscreen (binds category) doesn't carry fullscreen across a
+# tiled-to-tiled focus switch on this Hyprland version (0.56.2) -- confirmed via
+# hyprctl activewindow -j testing, its 0.56.0 fix only covers tiled-to-floated.
+# Does it manually instead: un-fullscreen, switch focus, re-fullscreen the new
+# window, preserving whichever mode (fullscreen vs maximize) was active.
+#
+# JSON state (activewindow -j .fullscreen) and the fullscreen dispatcher's mode
+# arg use different numbering -- 1=maximize matches in both, but JSON's 2
+# (fullscreen) is the dispatcher's mode 0. The dispatcher toggles, so calling it
+# with the same mode again is what turns it back off.
+
+DIR="${1:?Usage: fullscreen-aware-focus <left|right|up|down>}"
+
+STATE=$(hyprctl activewindow -j | jq '.fullscreen')
+
+case "$STATE" in
+    1) MODE=1 ;;  # maximize
+    2) MODE=0 ;;  # fullscreen
+    *) MODE="" ;; # not fullscreen/maximized (0), or "both" (3, rare) -- skip
+esac
+
+if [ -n "$MODE" ]; then
+    hyprctl dispatch "hl.dsp.window.fullscreen({ mode = $MODE })"
+    hyprctl dispatch "hl.dsp.focus({ direction = \"$DIR\" })"
+    hyprctl dispatch "hl.dsp.window.fullscreen({ mode = $MODE })"
+else
+    hyprctl dispatch "hl.dsp.focus({ direction = \"$DIR\" })"
+fi

@@ -380,11 +380,10 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(
 ), { locked = true, repeating = true })
 
 
--- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + left",  hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/fullscreen-aware-focus left"))
+hl.bind(mainMod .. " + right", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/fullscreen-aware-focus right"))
+hl.bind(mainMod .. " + up",    hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/fullscreen-aware-focus up"))
+hl.bind(mainMod .. " + down",  hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/fullscreen-aware-focus down"))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]

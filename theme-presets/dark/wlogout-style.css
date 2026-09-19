@@ -37,6 +37,10 @@ button:focus {
   color: #f0c060;
 }
 
+#reboot:hover {
+  color: #7ee2a8;
+}
+
 #shutdown:hover {
   color: #f28b8b;
 }

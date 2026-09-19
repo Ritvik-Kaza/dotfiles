@@ -45,7 +45,7 @@ dotfiles/
 │   ├── config.jsonc      # Waybar module configuration
 │   └── style.css         # Waybar styling
 └── wlogout/
-    ├── layout             # Lock / suspend / shutdown buttons
+    ├── layout             # Lock / suspend / reboot / shutdown buttons
     └── style.css          # Floating dark-pill styling to match waybar
 ```
 
@@ -147,7 +147,7 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - `mainMod + N` in Hyprland runs `dev-session.sh`, opening Alacritty with a tmux session: window 1 = `nvim .`, window 2 = plain shell, focused on window 1.
 - tmux prefix is `Ctrl+A` (remapped from default `Ctrl+B`). Windows can also be switched directly with `Alt+1` through `Alt+9`, no prefix needed, and 'Alt + Tab' can be used to switch to the previous window.
 - Waybar is styled as individually floating, semi-transparent pills rather than one solid bar; pairs with the `blur` layer rules in `hyprland.lua` for the waybar and wlogout namespaces.
-- Clicking the power icon in waybar runs `power-menu`, which opens a small wlogout popup (lock / suspend / shutdown) anchored under the icon instead of a fullscreen menu. Requires `wlogout` and `jq`.
+- Clicking the power icon in waybar runs `power-menu`, which opens a small wlogout popup (lock / suspend / reboot / shutdown) anchored under the icon instead of a fullscreen menu. Requires `wlogout` and `jq`.
 - `hyprlock.conf` is a minimal centered theme: large clock, date, greeting, and a translucent password pill, all vertically centered; battery percentage sits small in the top-right corner. Background is the normal wallpaper blurred at lock time via hyprlock's own `blur_passes`/`blur_size`, not a separate pre-blurred image. The password field's outline turns amber (`capslock_color`) when caps lock is on. Battery path assumes `BAT0` — check `/sys/class/power_supply/` if yours differs.
 - `Super + Shift + R` opens a small floating Alacritty window running `fzf` piped into `nvim`, for fuzzy-finding and opening any file under `$HOME`. Floating, resizing (560×320), and centering are handled by a `window.open` event handler in `hyprland.lua`, not a static window rule — the popup gets its own opacity override too, applied via a widened `Alacritty|alacritty-fzf` regex in the opacity rule. `FZF_DEFAULT_COMMAND` (set in `.bashrc`) excludes `.git`, `node_modules`, `.cache`, `.npm`, `.cargo`, `.rustup`, `.keychain`, and `.local/share/containers` to keep results fast and relevant.
 - Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.

@@ -313,7 +313,7 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/dev-session.sh"))
-hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("firefox"))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + Tab", hl.dsp.focus({ workspace = "previous"}))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
@@ -427,8 +427,22 @@ hl.on("window.open", function(w)
     hl.dispatch(hl.dsp.window.center({ window = w }))
 end)
 
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(
+-- Filename search: fuzzy-pick a file by name, opens it in nvim.
+hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(
     "alacritty --class alacritty-fzf -e bash -ic \"nvim \\$(fzf)\""
+))
+
+-- Content search: fuzzy-pick a file by text INSIDE it (not its name).
+-- Separate from the filename search above on purpose.
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd(
+    "alacritty --class alacritty-fzf -e " .. os.getenv("HOME") .. "/.config/hypr/scripts/find-text"
+))
+
+-- Same, but also covers PDFs/docs/archives/images (OCR) via ripgrep-all --
+-- slower, since it extracts text from each one before searching, so it's a
+-- separate bind rather than the default.
+hl.bind(mainMod .. " + ALT + F", hl.dsp.exec_cmd(
+    "alacritty --class alacritty-fzf -e " .. os.getenv("HOME") .. "/.config/hypr/scripts/find-text all"
 ))
 
 

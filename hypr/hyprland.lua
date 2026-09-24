@@ -331,6 +331,8 @@ hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(
 hl.bind("Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureScreen.sh"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureArea.sh"))
 hl.bind(mainMod .. " + ALT + S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureText.sh"))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/screenshots/captureAnnotate.sh"))
+
 
 -- Volume/media keys
 -- locked=true: also usable while hyprlock is up. repeating=true: holding the

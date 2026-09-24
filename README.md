@@ -29,7 +29,8 @@ dotfiles/
 │       └── screenshots/
 │           ├── captureArea.sh
 │           ├── captureScreen.sh
-│           └── captureText.sh      # Region-select OCR via tesseract, copies extracted text to clipboard
+│           ├── captureText.sh      # Region-select OCR via tesseract, copies extracted text to clipboard
+│           └── captureAnnotate.sh  # Region-select, opens result in swappy for annotation before saving/copying
 ├── tmux/
 │   └── .tmux.conf        # tmux config: custom prefix, mouse support, Alt+number window switching
 ├── rofi/
@@ -46,9 +47,11 @@ dotfiles/
 ├── waybar/
 │   ├── config.jsonc      # Waybar module configuration
 │   └── style.css         # Waybar styling
-└── wlogout/
-    ├── layout             # Lock / suspend / reboot / shutdown buttons
-    └── style.css          # Floating dark-pill styling to match waybar
+├── wlogout/
+│   ├── layout             # Lock / suspend / reboot / shutdown buttons
+│   └── style.css          # Floating dark-pill styling to match waybar
+└── swappy/
+    └── config             # Sets swappy's save location/filename to match the other screenshot scripts
 ```
 
 ## Dependencies
@@ -68,9 +71,10 @@ yay -S ripgrep-all
 
 **hypr/**
 ```bash
-sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng
+sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy
 ```
-- `grim` + `slurp`: used by `hypr/scripts/screenshots/captureArea.sh`, `captureScreen.sh`, and `captureText.sh`.
+- `grim` + `slurp`: used by `hypr/scripts/screenshots/captureArea.sh`, `captureScreen.sh`, `captureText.sh`, and `captureAnnotate.sh`.
+- `swappy`: annotation editor (arrows, boxes, text, blur) used by `captureAnnotate.sh` (`Super + Print`) — draws/marks up a screenshot before saving or copying. `swappy/config` sets its save location/filename format to match the other screenshot scripts.
 - `tesseract` + `tesseract-data-eng`: OCR engine used by `captureText.sh` (`Super + Alt + S`) to read text out of a selected screen region. Swap `tesseract-data-eng` for a different `tesseract-data-*` package if you need another language.
 - `jq`: used by `hypr/scripts/power-menu` and `theme-menu` to read monitor geometry from `hyprctl`, and by `fullscreen-aware-focus` to read the focused window's fullscreen state.
 - `hypridle`: auto-locks after 10 minutes idle, suspends after 30 (`hypridle.conf`). Autostarted in `hyprland.lua`.
@@ -160,7 +164,7 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.
 - **Wallpaper not loading on boot:** `hyprpaper`'s own `wallpaper =` config directive doesn't reliably apply at its own startup on this system — only the live `hyprctl hyprpaper wallpaper ...` IPC command actually works. `hypr/scripts/hyprpaper-init` works around this: it starts hyprpaper, waits for its IPC socket to come up, then explicitly re-sends the wallpaper command by reading the path out of `hyprpaper.conf`. `hyprland.lua`'s autostart calls this script instead of `hyprpaper` directly.
 - `Super + V` opens clipboard history (cliphist piped through the themed rofi menu). The cliphist bind guards against Esc/empty selection — piping an empty rofi result straight into `wl-copy` would silently blank the clipboard, so the script checks for a non-empty selection before copying.
-- **Screenshots**: `Print` (`captureScreen.sh`) grabs the active monitor instantly; `Super + Shift + S` (`captureArea.sh`) opens `slurp` for an interactive region select and copies the image; `Super + Alt + S` (`captureText.sh`) does the same region select but OCRs it via `tesseract` and copies the extracted text instead.
+- **Screenshots**: `Print` (`captureScreen.sh`) grabs the active monitor instantly; `Super + Shift + S` (`captureArea.sh`) opens `slurp` for an interactive region select and copies the image; `Super + Alt + S` (`captureText.sh`) does the same region select but OCRs it via `tesseract` and copies the extracted text instead; `Super + Print` (`captureAnnotate.sh`) does the same region select but opens the result in `swappy` for annotation before saving or copying, instead of doing either instantly.
 - `Super + Left/Right/Up/Down` (directional focus) runs `fullscreen-aware-focus <direction>` instead of calling the focus dispatcher directly: it reads the focused window's fullscreen state via `hyprctl activewindow -j`, and if it's fullscreen or maximized, un-fullscreens, switches focus, then re-applies the same mode to the newly focused window — so fullscreening a window (`Super + Shift + Space`) and then switching focus keeps the next window fullscreen too, instead of dropping back to the tiled view. The JSON state Hyprland reports (`1` = maximize, `2` = fullscreen) doesn't match the fullscreen dispatcher's own `mode` argument (`0` = fullscreen, `1` = maximize), so the script translates between the two.
 - Theme switching: a paintbrush icon sits leftmost in waybar's right-side module group. Clicking it runs `theme-menu`, which opens a small wlogout-based popup (same mechanism as `power-menu`) listing "Dark", "Rose", "Nokron" (violet/indigo with a warm gold accent, inspired by a starry-ruins wallpaper), and "Krat" (steel-blue-grey base with teal and magenta accents, gothic-noir hotel wallpaper). Picking one runs `theme-switch <name>`, which copies that preset's 8 files (waybar, wlogout, rofi, hyprlock, alacritty, hyprpaper, the theme-switcher popup's own style, and mako's notification styling) into place, restarts waybar (`SIGUSR2`), hyprpaper, and reloads mako (`makoctl reload`), then fires a notification. Each preset's `action` in `theme-switcher/layout` wraps the command in `setsid sh -c '...'` — without `setsid`, wlogout kills the spawned process when its own window closes (which happens immediately after a click), so anything past the first couple of fast commands (like the `hyprctl hyprpaper` calls) would silently never run. Alacritty only picks up new colors on freshly-opened windows; already-open terminals need to be closed and reopened. The picker popup's own background/border themes along with everything else, but each button's *hover color* (blue for Dark, rose for Rose, violet for Nokron, teal for Krat) stays fixed across all four presets by design — it identifies which theme that button switches *to*, not the currently active one. The popup widened to `280px`/`-b 4` to fit the fourth button.
 - **Nvim theming**: `init.lua` keeps `tokyonight` as the colorscheme engine but overrides its background tones plus one accent hue (`blue`/`purple`/`cyan`) per active theme via `on_colors` — diagnostic colors (red/green/yellow for errors/warnings/hints) are deliberately left untouched so syntax highlighting stays legible. This is exposed as a global `ThemeApply(name)` function. `.bashrc` wraps `nvim` in a shell function that always launches it with `--listen /tmp/nvim-sockets/$$.sock`, giving every instance an RPC socket. `theme-switch` writes the active theme name to `~/.config/theme-current` (read by `init.lua` on startup) and loops over every live socket in `/tmp/nvim-sockets/`, running `nvim --server <sock> --remote-expr "v:lua.ThemeApply('<name>')"` so **already-open** nvim windows recolor live, not just freshly-launched ones — the one case in this setup where a "reopen to see new colors" limitation (like Alacritty's) is avoidable. The broadcast loop's `nvim --server` call is suffixed with `|| true`, since `theme-switch` runs under `set -euo pipefail` and a stale/dead socket failing there would otherwise abort the entire script before it reaches the waybar/hyprpaper reload steps. `dev-session.sh`'s tmux-launched nvim (`tmux new-session ... "nvim ."`) runs as tmux's literal pane command, bypassing the `.bashrc` shell function entirely, so it's given its own explicit `--listen /tmp/nvim-sockets/dev-session.sock` directly in the script instead of relying on the wrapper.

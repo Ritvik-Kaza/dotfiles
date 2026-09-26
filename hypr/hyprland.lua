@@ -342,12 +342,14 @@ hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hy
 -- allows it while locked), both binds fired on every unlocked press, doubling
 -- the step. Consolidated into one bind per key instead.
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(
+    "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && " ..
     "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"Volume: $(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')%\""
 ), { locked = true, repeating = true })
 
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(
+    "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0 && " ..
     "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && " ..
     "notify-send -h string:x-canonical-private-synchronous:vol -t 1500 " ..
     "\"Volume: $(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')%\""

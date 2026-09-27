@@ -1,0 +1,33 @@
+#!/bin/bash
+# Usage: volume-step <up|down>
+# Steps volume to the next multiple of 5 in the pressed direction, rather than
+# a blind relative 5%+/5%- -- an odd starting value (e.g. a newly-connected
+# headphone device with its own remembered volume) would otherwise drift off
+# the 5% grid forever. Direction-aware: rounds toward whichever way was
+# pressed, not just to the nearest multiple overall, so a press never
+# "reverses" (e.g. down at 39% snapping up to 40%).
+
+DIR="${1:?Usage: volume-step <up|down>}"
+
+wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
+
+CUR=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}')
+
+if [ "$DIR" = "up" ]; then
+    if [ $((CUR % 5)) -eq 0 ]; then
+        NEW=$((CUR + 5))
+    else
+        NEW=$(( (CUR / 5 + 1) * 5 ))
+    fi
+    [ "$NEW" -gt 100 ] && NEW=100
+else
+    if [ $((CUR % 5)) -eq 0 ]; then
+        NEW=$((CUR - 5))
+    else
+        NEW=$(( (CUR / 5) * 5 ))
+    fi
+    [ "$NEW" -lt 0 ] && NEW=0
+fi
+
+wpctl set-volume @DEFAULT_AUDIO_SINK@ "${NEW}%"
+notify-send -h string:x-canonical-private-synchronous:vol -t 1500 "Volume: ${NEW}%"

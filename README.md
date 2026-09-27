@@ -26,6 +26,7 @@ dotfiles/
 │       ├── webapp-install          # Turns any website into a chromeless launcher app (chromium --app) with a fetched favicon
 │       ├── find-text               # Fuzzy-finds a file by content instead of name (plain text via ripgrep, or all file types via ripgrep-all)
 │       ├── fullscreen-aware-focus  # Directional focus switch that preserves fullscreen/maximize state across the switch
+│       ├── volume-step             # Volume up/down: unmutes if muted, rounds to the nearest 5% in the pressed direction
 │       └── screenshots/
 │           ├── captureArea.sh
 │           ├── captureScreen.sh
@@ -188,6 +189,9 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
 - **`Super + Left/Right/Up/Down`** (directional focus) runs `fullscreen-aware-focus <direction>` instead of calling the focus dispatcher directly.
   - It reads the focused window's fullscreen state via `hyprctl activewindow -j`, and if it's fullscreen or maximized, un-fullscreens, switches focus, then re-applies the same mode to the newly focused window — so fullscreening a window (`Super + Shift + Space`) and then switching focus keeps the next window fullscreen too, instead of dropping back to the tiled view.
   - The JSON state Hyprland reports (`1` = maximize, `2` = fullscreen) doesn't match the fullscreen dispatcher's own `mode` argument (`0` = fullscreen, `1` = maximize), so the script translates between the two.
+- **Volume keys** (`XF86AudioRaiseVolume`/`XF86AudioLowerVolume`) run `volume-step <up|down>` instead of a plain relative `wpctl set-volume 5%+`/`5%-`.
+  - Unmutes first if currently muted, so raising/lowering volume while muted gets you audible sound in one press instead of silently adjusting a value you can't hear.
+  - Rounds to the next multiple of 5 in the pressed direction rather than blindly stepping by 5 from wherever the volume happens to be — a newly-connected device (headphones, etc.) can land on an odd value with its own remembered volume, which would otherwise never land back on a "clean" number. Rounding toward the pressed direction (not just to the nearest multiple overall) avoids a press ever feeling like it went backwards.
 - **Theme switching:** a paintbrush icon sits leftmost in waybar's right-side module group.
   - Clicking it runs `theme-menu`, which opens a small wlogout-based popup (same mechanism as `power-menu`) listing "Dark", "Rose", "Nokron" (violet/indigo with a warm gold accent, inspired by a starry-ruins wallpaper), and "Krat" (steel-blue-grey base with teal and magenta accents, gothic-noir hotel wallpaper).
   - Picking one runs `theme-switch <name>`, which copies that preset's 8 files (waybar, wlogout, rofi, hyprlock, alacritty, hyprpaper, the theme-switcher popup's own style, and mako's notification styling) into place, restarts waybar (`SIGUSR2`), hyprpaper, and reloads mako (`makoctl reload`), then fires a notification.

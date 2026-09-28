@@ -42,6 +42,11 @@ PROMPT_COMMAND=set_prompt
 
 alias suspend='hyprlock >/dev/null 2>&1 & sleep 1 && systemctl suspend >/dev/null 2>&1'
 
+# rm goes to the trash (recoverable) instead of deleting permanently -- same
+# XDG Trash spec as Thunar's own "Move to Trash", so both share one trash can.
+# Use \rm or /bin/rm for an actual permanent delete.
+alias rm='trash-put'
+
 eval $(keychain --eval id_ed25519)
 
 eval "$(fzf --bash)"

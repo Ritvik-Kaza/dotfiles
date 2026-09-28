@@ -79,8 +79,11 @@ sudo pacman -S keychain trash-cli
 
 **hypr/**
 ```bash
-sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy
+sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy thunar gvfs thunar-archive-plugin xarchiver unrar
 ```
+- `thunar`: file manager, bound to `Super + E` (the `fileManager` variable in `hyprland.lua`).
+- `gvfs`: gives Thunar its "Move to Trash" support on delete — same trash `trash-cli` (below) uses from the CLI.
+- `thunar-archive-plugin` + `xarchiver` + `unrar`: adds "Extract Here" / "Extract to..." to Thunar's right-click menu; `xarchiver` does the actual extracting, `unrar` adds `.rar` support specifically (xarchiver alone can't handle it without this).
 - `grim` + `slurp`: used by `hypr/scripts/screenshots/captureArea.sh`, `captureScreen.sh`, `captureText.sh`, and `captureAnnotate.sh`.
 - `swappy`: annotation editor (arrows, boxes, text, blur) used by `captureAnnotate.sh` (`Super + Print`) — draws/marks up a screenshot before saving or copying. `swappy/config` sets its save location/filename format to match the other screenshot scripts.
 - `tesseract` + `tesseract-data-eng`: OCR engine used by `captureText.sh` (`Super + Alt + S`) to read text out of a selected screen region. Swap `tesseract-data-eng` for a different `tesseract-data-*` package if you need another language.

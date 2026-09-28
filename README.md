@@ -70,6 +70,13 @@ yay -S ripgrep-all
 - `ripgrep-all` (AUR): powers the Super+Alt+F content-search popup — also searches PDFs, Office docs, archives, and images (via OCR), at the cost of being slower since it has to extract each file's text before searching it.
 - `xdg-utils`: `find-text` hands off any non-text result (a PDF, a `.docx`) to `xdg-open` rather than forcing it into `nvim` — opens with whatever's registered as the default handler for that file type (e.g. Papers for PDFs). Likely already installed as a dependency of other packages, but not guaranteed on a minimal install.
 
+**bash/**
+```bash
+sudo pacman -S keychain trash-cli
+```
+- `keychain`: manages the SSH agent so `id_ed25519` only needs its passphrase entered once per login instead of once per shell. Without it, the `eval $(keychain --eval id_ed25519)` line in `.bashrc` errors on every new shell.
+- `trash-cli`: `rm` is aliased to `trash-put`, so deletes go to the trash (same one Thunar's GUI delete uses) instead of being removed permanently. Use `\rm` or `/usr/bin/rm` to bypass the alias for an actual permanent delete.
+
 **hypr/**
 ```bash
 sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy

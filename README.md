@@ -6,6 +6,7 @@ Personal configuration files for my Arch Linux + Hyprland setup.
 
 ```
 dotfiles/
+├── install.sh             # Copies every config into place on a fresh machine (see Usage below)
 ├── alacritty/
 │   └── alacritty.toml     # Base terminal config: dark theme colors, opacity, font
 ├── bash/
@@ -162,8 +163,11 @@ cp hypr/scripts/theme-switch ~/.local/bin/theme-switch
 cp hypr/scripts/theme-menu ~/.local/bin/theme-menu
 cp hypr/scripts/hyprpaper-init ~/.local/bin/hyprpaper-init
 cp hypr/scripts/webapp-install ~/.local/bin/webapp-install
-chmod +x ~/.local/bin/power-menu ~/.local/bin/theme-switch ~/.local/bin/theme-menu ~/.local/bin/hyprpaper-init ~/.local/bin/webapp-install ~/.config/hypr/scripts/*.sh
+chmod +x ~/.local/bin/power-menu ~/.local/bin/theme-switch ~/.local/bin/theme-menu ~/.local/bin/hyprpaper-init ~/.local/bin/webapp-install
+chmod -R +x ~/.config/hypr/scripts/
 ```
+
+Or just run `./install.sh` from a clone of this repo to do all of the above in one shot — same commands, safe to re-run.
 
 Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart Hyprland/Waybar).
 

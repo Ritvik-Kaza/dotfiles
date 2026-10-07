@@ -98,6 +98,18 @@ hl.env("HYPRCURSOR_SIZE", "24")
 ---- LOOK AND FEEL ----
 -----------------------
 
+-- Fixes XWayland apps (raylib/GLFW, and any other X11-only app) looking
+-- stretched/blurry on this HiDPI monitor -- XWayland can't do fractional
+-- scaling itself, so without this Hyprland naively upscales its 1x buffer
+-- to fill the monitor's 2x space. Trade-off: XWayland windows now render at
+-- their literal requested pixel size, so they'll appear physically smaller
+-- on screen than before, not just crisper.
+hl.config({
+    xwayland = {
+        force_zero_scaling = true,
+    },
+})
+
 hl.layer_rule({
   name = "waybar-blur",
   match = { namespace = "waybar" },

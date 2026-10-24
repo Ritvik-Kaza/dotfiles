@@ -80,8 +80,12 @@ sudo pacman -S keychain trash-cli
 
 **hypr/**
 ```bash
-sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy thunar gvfs thunar-archive-plugin xarchiver unrar mission-center
+sudo pacman -S hyprlock hyprpaper grim slurp wl-clipboard jq hypridle cliphist polkit-gnome tesseract tesseract-data-eng swappy thunar gvfs thunar-archive-plugin xarchiver unrar mission-center brightnessctl playerctl libnotify wireplumber
 ```
+- `brightnessctl`: brightness keys (`XF86MonBrightnessUp`/`Down`), stepping to the next multiple of 5 in the pressed direction, same as `volume-step`.
+- `playerctl`: media keys (next / previous / play-pause).
+- `libnotify`: `notify-send`, used for the volume/brightness/mute toasts, screenshot confirmations, and `theme-switch`'s notification.
+- `wireplumber`: `wpctl`, used by `volume-step` and the mute/mic-mute keys. Usually already installed alongside PipeWire.
 - `mission-center`: GUI task manager (CPU/memory/disk/network/GPU graphs, process list), bound to `Super + Escape`.
 - `thunar`: file manager, bound to `Super + E` (the `fileManager` variable in `hyprland.lua`).
 - `gvfs`: gives Thunar its "Move to Trash" support on delete — same trash `trash-cli` (below) uses from the CLI.
@@ -128,7 +132,7 @@ No other new packages — everything else needed (`hyprctl`, `pkill`, `setsid`) 
 
 ## Hardcoded values
 
-These are machine-specific literals baked into the configs. Anyone reusing this repo will need to change these two:
+These are machine-specific literals baked into the configs. Anyone reusing this repo will need to change these:
 
 - **`hypr/hyprlock.conf`** — `$wallpaper` is set to `~/Pictures/Wallpapers/wallpaper2.png`.
 - **`hypr/hyprlock.conf`** — battery path is `/sys/class/power_supply/BAT0/capacity`; check `/sys/class/power_supply/` if your battery has a different name (or remove the label if there's no battery at all).
@@ -137,9 +141,11 @@ These are machine-specific literals baked into the configs. Anyone reusing this 
   - `theme-presets/rose/` — `wallpaper3.jpeg`
   - `theme-presets/nokron/` — `wallpaper4.png`
   - `theme-presets/krat/` — `wallpaper5.jpeg`
+- **Monitor name `eDP-1`** — hardcoded in `hypr/scripts/hyprpaper-init`, `hypr/scripts/theme-switch`, and every `hyprpaper.conf` (top-level and per preset). Check `hyprctl monitors` for yours.
 - **Duplication risk, not a bug:** `waybar/style.css`, `wlogout/style.css`, `theme-switcher/style.css`, `rofi/theme.rasi`, and `alacritty/alacritty.toml` at the top level are meant to mirror whichever preset they were last synced from, and `theme-switch <name>` overwrites these same paths with that preset's files. Editing one of them directly without updating the matching preset means a future `theme-switch <name>` on that theme will silently revert the edit — after tweaking colors directly, either update the matching preset file too or just re-run `theme-switch <name>` to resync.
 - **Top-level files currently reflect `krat`, not `dark`:**
-  - `waybar/style.css`, `wlogout/style.css`, `theme-switcher/style.css`, and `alacritty/alacritty.toml` at the top level currently hold `theme-presets/krat/`'s colors (from an earlier sync off a live machine that had krat active), while `hypr/hyprlock.conf` and `hypr/hyprpaper.conf` at the top level still point at `wallpaper2.png` (dark's wallpaper) — a mixed state, left as-is intentionally as the starting point for a fresh install rather than reconciled back to dark. `rofi/theme.rasi` is unaffected since it isn't themed per-preset.
+  - `waybar/style.css`, `wlogout/style.css`, `theme-switcher/style.css`, and `alacritty/alacritty.toml` at the top level currently hold `theme-presets/krat/`'s colors (from an earlier sync off a live machine that had krat active), while `hypr/hyprlock.conf`, `hypr/hyprpaper.conf`, and `rofi/theme.rasi` at the top level still match `dark` — a mixed state, left as-is intentionally as the starting point for a fresh install rather than reconciled back to dark.
+  - The top-level `waybar/style.css` and `theme-switcher/style.css` also carry small padding tweaks no preset has (`#network` padding, `#custom-theme` `padding-left: 8px` vs the presets' `6px`, `#dark` `padding-right: 4px`), so any `theme-switch` drops them.
   - If you clone this repo fresh, run `theme-switch <name>` for whichever theme you actually want right after copying files — don't assume the top-level copy alone gives a fully consistent look.
 
 ## Usage
@@ -156,6 +162,7 @@ cp -r rofi/* ~/.config/rofi/
 cp -r theme-switcher/* ~/.config/theme-switcher/
 cp -r theme-presets ~/.config/theme-presets
 cp -r alacritty/* ~/.config/alacritty/
+cp -r swappy/* ~/.config/swappy/
 cp tmux/.tmux.conf ~/.tmux.conf
 
 mkdir -p ~/.local/bin
@@ -192,7 +199,7 @@ Reload as needed (`source ~/.bashrc`, `tmux source-file ~/.tmux.conf`, restart H
   - `Super + Shift + F` searches plain text files only, via `ripgrep`, live-updating as you type.
   - `Super + Alt + F` searches everything (PDFs, Office docs, archives, images via OCR) via `ripgrep-all`, at the cost of speed, since each file's text has to be extracted before it can be searched.
   - Either way the result list is filenames, never the matched text itself — picking one opens it. Text files open in `nvim`; anything `nvim` can't meaningfully display (a PDF, a `.docx`) is handed to `xdg-open` instead, detached with `setsid`/`disown` plus a short `sleep` so the popup's terminal can close without killing whatever it just launched — the sleep is load-bearing, not padding, since there's a narrow window right after forking where the child can still get killed by the terminal closing before the detach fully lands.
-- Rofi (`Super + D`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.
+- Rofi (`Super + R`, bound in `hyprland.lua`) uses a dark floating-pill theme matching waybar/wlogout: `rgba(18,18,22,0.90)` background, thin white hairline border, 16px rounded corners, muted blue-grey highlight on the selected row instead of a bright accent color. `config.rasi` sets `modi` to `drun,run,window` and points at `theme.rasi` via `@theme`.
 - **Wallpaper not loading on boot:** `hyprpaper`'s own `wallpaper =` config directive doesn't reliably apply at its own startup on this system — only the live `hyprctl hyprpaper wallpaper ...` IPC command actually works.
   - `hypr/scripts/hyprpaper-init` works around this: it starts hyprpaper, waits for its IPC socket to come up, then explicitly re-sends the wallpaper command by reading the path out of `hyprpaper.conf`. `hyprland.lua`'s autostart calls this script instead of `hyprpaper` directly.
 - `Super + V` opens clipboard history (cliphist piped through the themed rofi menu). The cliphist bind guards against Esc/empty selection — piping an empty rofi result straight into `wl-copy` would silently blank the clipboard, so the script checks for a non-empty selection before copying.

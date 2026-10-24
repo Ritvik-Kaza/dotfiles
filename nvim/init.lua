@@ -257,6 +257,33 @@ do
   })
 end
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'cpp', 'c' },
+  callback = function()
+    vim.schedule(function()
+      vim.bo.indentexpr = ''
+      vim.opt_local.cindent = true
+      vim.opt_local.cinoptions:append('g1s')
+    end)
+  end,
+})
+
+do
+  vim.opt.tabstop = 4
+  vim.opt.shiftwidth = 4
+  vim.opt.softtabstop = 4
+  vim.opt.expandtab = true
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'make',
+    callback = function()
+      vim.opt_local.expandtab = false
+      vim.opt_local.tabstop = 4
+      vim.opt_local.shiftwidth = 4
+    end,
+  })
+end
+
 -- ============================================================
 -- SECTION 3: PLUGIN MANAGER INTRO
 -- vim.pack intro, build hooks

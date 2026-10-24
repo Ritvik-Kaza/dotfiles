@@ -328,7 +328,13 @@ hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/s
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + Tab", hl.dsp.focus({ workspace = "previous"}))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
-hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("sudo timedatectl set-ntp true"))
+-- Force a fresh NTP sync (clock drifts after booting Windows). No sudo: there's
+-- no terminal to prompt in, so polkit-gnome asks for the password instead.
+hl.bind(mainMod .. " + S", hl.dsp.exec_cmd(
+    "systemctl restart systemd-timesyncd && " ..
+    "notify-send -t 1500 'Resyncing clock' || " ..
+    "notify-send -t 3000 'Clock resync failed'"
+))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("killall waybar; hyprctl dispatch 'hl.dsp.exec_cmd(\"waybar\")'"))
 hl.bind(mainMod .. " + SHIFT" .. " + L", hl.dsp.exec_cmd("hyprlock & sleep 1 && systemctl suspend"))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("missioncenter"))

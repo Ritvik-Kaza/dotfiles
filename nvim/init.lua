@@ -1049,6 +1049,14 @@ do
   })
 end
 
+-- ==========================================================
+-- SECTION: AUTO-CLOSE BRACKETS
+-- ==========================================================
+do
+  vim.pack.add { { src = gh 'windwp/nvim-autopairs' } }
+  require('nvim-autopairs').setup {}
+end
+
 -- ============================================================
 -- SECTION 10: OPTIONAL EXAMPLES / NEXT STEPS
 -- kickstart.plugins.* examples

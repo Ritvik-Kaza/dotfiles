@@ -386,7 +386,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(
 
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(
     "current=$(brightnessctl -m | awk -F, '{print $4}' | tr -d '%'); " ..
-    "target=$(( (current / 5) * 5 - 5 )); " ..
+    "target=$(( (current - 1) / 5 * 5 )); " ..
     "[ $target -lt 5 ] && target=5; " ..
     "brightnessctl set ${target}% && " ..
     "notify-send -h string:x-canonical-private-synchronous:brightness -t 1500 \"Brightness: ${target}%\""
